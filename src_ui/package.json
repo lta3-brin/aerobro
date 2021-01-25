@@ -1,6 +1,6 @@
 {
   "name": "aerobro",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Pengembangan aplikasi riset aerobro",
   "productName": "Aerobro",
   "author": "4KB4RPN136",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
+    "babylonjs": "^4.2.0",
     "core-js": "^3.6.5",
     "quasar": "^1.0.0"
   },
