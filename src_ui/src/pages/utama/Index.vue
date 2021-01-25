@@ -1,10 +1,7 @@
 <template>
   <q-page class="flex flex-center">
-    <div class="row items-center justify-center full-width q-mb-md">
-      <div class="col-12 col-md-6 q-px-sm">
-        <h1>Gambar Jembatan</h1>
-      </div>
-      <div class="col-12 col-md-6 q-px-sm">
+    <div class="row items-center justify-center full-width q-my-sm">
+      <div class="col-12 col-md-5 q-px-sm">
         <q-list bordered class="rounded-borders">
           <q-item-label header>Live Data Sensor</q-item-label>
 
@@ -76,12 +73,13 @@
           </q-item>
         </q-list>
       </div>
+
+      <div class="col-12 col-md-7 q-px-sm">
+        <canvas ref="jembatan" class="full-width" />
+        <q-resize-observer @resize="onResize" />
+      </div>
     </div>
   </q-page>
 </template>
 
-<script>
-export default {
-  name: 'PageIndex'
-}
-</script>
+<script src="./utama.js" />
