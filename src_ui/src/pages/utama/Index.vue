@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="row items-center justify-center full-width q-my-sm">
-      <div class="col-12 col-md-5 q-px-sm">
+      <div class="col-12 col-md-4 q-px-md">
         <q-list bordered class="rounded-borders">
           <q-item-label header>Live Data Sensor</q-item-label>
 
@@ -13,7 +13,7 @@
             <q-item-section top>
               <q-item-label lines="1">
                 <span class="text-weight-medium">Data Strain/Stress: </span>
-                <span class="text-grey-8"> [Non dimensi]</span>
+                <span class="text-grey-8"> [-]</span>
               </q-item-label>
 
               <q-item-label lines="1" class="q-mt-xs text-weight-bold text-h3 text-uppercase">
@@ -74,9 +74,8 @@
         </q-list>
       </div>
 
-      <div class="col-12 col-md-7 q-px-sm">
-        <canvas ref="jembatan" class="full-width" />
-        <q-resize-observer @resize="onResize" />
+      <div class="col-12 col-md-8 q-px-sm">
+        <Jembatan />
       </div>
     </div>
   </q-page>
