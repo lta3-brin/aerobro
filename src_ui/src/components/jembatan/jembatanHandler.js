@@ -1,4 +1,5 @@
 import * as BABYLON from 'babylonjs'
+import 'babylonjs-loaders'
 
 export default {
   name: 'ComponentJembatan',
@@ -28,10 +29,10 @@ export default {
 
       const camera = new BABYLON.ArcRotateCamera(
         'camera',
-        -Math.PI / 2,
-        Math.PI / 2.5,
-        4,
-        new BABYLON.Vector3(0, 0, 0),
+        -Math.PI / 5,
+        Math.PI / 3,
+        6,
+        new BABYLON.Vector3(1, 1, -2),
         scene
       )
 
@@ -44,12 +45,20 @@ export default {
         scene
       )
 
-      const box = BABYLON.MeshBuilder.CreateBox('box', {})
-      const boxMaterial = new BABYLON.StandardMaterial('boxMat', scene)
-      boxMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5)
-      boxMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+      // const box = BABYLON.MeshBuilder.CreateBox('box', {})
+      // const boxMaterial = new BABYLON.StandardMaterial('boxMat', scene)
+      // boxMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5)
+      // boxMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+      //
+      // box.material = boxMaterial
 
-      box.material = boxMaterial
+      BABYLON.SceneLoader.ImportMeshAsync(
+        'jembatan_Cube.003',
+        '/models/',
+        'jembatan.obj',
+        scene
+      ).then(r => {})
+        .catch(err => console.log(err.message))
 
       return scene
     }
