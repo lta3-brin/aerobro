@@ -31,7 +31,7 @@ export default {
         'camera',
         -Math.PI / 5,
         Math.PI / 3,
-        6,
+        3,
         new BABYLON.Vector3(1, 1, -2),
         scene
       )
