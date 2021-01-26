@@ -45,20 +45,19 @@ export default {
         scene
       )
 
-      // const box = BABYLON.MeshBuilder.CreateBox('box', {})
-      // const boxMaterial = new BABYLON.StandardMaterial('boxMat', scene)
-      // boxMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5)
-      // boxMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
-      //
-      // box.material = boxMaterial
-
       BABYLON.SceneLoader.ImportMeshAsync(
         'jembatan_Cube.003',
         '/models/',
         'jembatan.obj',
         scene
-      ).then(r => {})
-        .catch(err => console.log(err.message))
+      ).then(result => {
+        const jembatan = result.meshes[0]
+        const boxMaterial = new BABYLON.StandardMaterial('boxMat', scene)
+        boxMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5)
+        boxMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+
+        jembatan.material = boxMaterial
+      }).catch(err => console.log(err.message))
 
       return scene
     }
