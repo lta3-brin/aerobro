@@ -29,10 +29,10 @@ export default {
 
       const camera = new BABYLON.ArcRotateCamera(
         'camera',
-        -Math.PI / 5,
+        -Math.PI / 4,
         Math.PI / 3,
         3,
-        new BABYLON.Vector3(1, 1, -2),
+        new BABYLON.Vector3(1, 1.5, -3.5),
         scene
       )
 
