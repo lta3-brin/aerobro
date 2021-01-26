@@ -36,6 +36,7 @@ export default {
         scene
       )
 
+      camera.wheelPrecision = 80
       camera.attachControl(canvas, true)
 
       // eslint-disable-next-line no-unused-vars
