@@ -1,12 +1,12 @@
 <template>
   <q-page>
     <div class="row justify-center q-py-md">
-      <div class="col-12 col-md-8">
+      <div class="col-12 col-md-9">
         <Jembatan :style="{ height: jembatanHeight + 'px' }" />
       </div>
 
-      <div class="col-12 col-md-4 q-px-md q-mb-md">
-        <q-card class="bg-dark text-white q-mb-md">
+      <div class="col-12 col-md-3 q-px-md q-mb-md">
+        <q-card class="bg-warning text-black q-mb-md">
           <q-card-section>
             <div class="text-h6">🌉 Perkiraan Toleransi Keamanan</div>
           </q-card-section>
@@ -24,7 +24,7 @@
           </q-card-actions>
         </q-card>
 
-        <q-list bordered class="rounded-borders">
+        <q-list bordered class="bg-white rounded-borders">
           <q-item-label header>Live Data Sensor</q-item-label>
 
           <q-item>
