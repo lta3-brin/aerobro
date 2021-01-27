@@ -1,4 +1,5 @@
 import * as BABYLON from 'babylonjs'
+import * as GUI from 'babylonjs-gui'
 import 'babylonjs-loaders'
 
 export default {
@@ -23,47 +24,7 @@ export default {
 
     this.motor = engine
 
-    const createScene = function () {
-      const scene = new BABYLON.Scene(engine)
-      scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
-
-      const camera = new BABYLON.ArcRotateCamera(
-        'camera',
-        -Math.PI / 5,
-        Math.PI / 3,
-        6,
-        new BABYLON.Vector3(1, 1, -2),
-        scene
-      )
-
-      camera.attachControl(canvas, true)
-
-      // eslint-disable-next-line no-unused-vars
-      const light = new BABYLON.HemisphericLight(
-        'light',
-        new BABYLON.Vector3(0, 1, 0),
-        scene
-      )
-
-      // const box = BABYLON.MeshBuilder.CreateBox('box', {})
-      // const boxMaterial = new BABYLON.StandardMaterial('boxMat', scene)
-      // boxMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5)
-      // boxMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
-      //
-      // box.material = boxMaterial
-
-      BABYLON.SceneLoader.ImportMeshAsync(
-        'jembatan_Cube.003',
-        '/models/',
-        'jembatan.obj',
-        scene
-      ).then(r => {})
-        .catch(err => console.log(err.message))
-
-      return scene
-    }
-
-    const scene = createScene()
+    const scene = this.onCreateScene(engine, canvas)
 
     engine.runRenderLoop(function () {
       scene.render()
@@ -74,6 +35,117 @@ export default {
       if (this.motor) {
         this.motor.resize()
       }
+    },
+    onCreateScene (engine, canvas) {
+      const scene = new BABYLON.Scene(engine)
+      scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
+
+      // Camera
+      const camera = new BABYLON.ArcRotateCamera(
+        'camera',
+        -Math.PI / 4,
+        Math.PI / 3,
+        3,
+        new BABYLON.Vector3(1, 1.5, -3.5),
+        scene
+      )
+
+      camera.wheelPrecision = 80
+      camera.storeState()
+      camera.attachControl(canvas, true)
+
+      const light = new BABYLON.DirectionalLight(
+        'dirlight',
+        new BABYLON.Vector3(-1, -2, -1),
+        scene
+      )
+      light.position = new BABYLON.Vector3(1, 0, 2)
+      light.intensity = 1
+
+      BABYLON.SceneLoader.ImportMeshAsync(
+        ['jembatan', 'acc', 'strain1', 'strain2'],
+        '/models/',
+        'jembatan.obj',
+        scene
+      ).then(result => {
+        const jembatan = result.meshes[0]
+        const jembatanMaterial = new BABYLON.StandardMaterial('jembatanMat', scene)
+        jembatanMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8)
+        jembatanMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+        jembatan.material = jembatanMaterial
+
+        const accSensor = result.meshes[1]
+        const accMaterial = new BABYLON.StandardMaterial('accMat', scene)
+        accMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0)
+        accMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+        accSensor.material = accMaterial
+
+        const strainSensor1 = result.meshes[2]
+        const strainSensor2 = result.meshes[3]
+        const strainMaterial = new BABYLON.StandardMaterial('strainMat', scene)
+        strainMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0)
+        strainMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+        strainSensor1.material = strainMaterial
+        strainSensor2.material = strainMaterial
+
+        // Shadow
+        const shadowGenerator = new BABYLON.ShadowGenerator(1024, light)
+        shadowGenerator.addShadowCaster(jembatan)
+        shadowGenerator.usePoissonSampling = true
+
+        /// Create GUI
+        const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI')
+        this.onCreateButton(advancedTexture, camera)
+        this.onCreateLabel(advancedTexture, 'accelerometer', 0, -220, 0, 20, accSensor)
+        this.onCreateLabel(advancedTexture, 'strain 1', 220, 0, -91, 0, strainSensor1)
+        this.onCreateLabel(advancedTexture, 'strain 2', -220, 0, 91, 0, strainSensor2)
+      }).catch(err => console.log(err.message))
+
+      return scene
+    },
+    onCreateButton (textureUI, camera) {
+      const button = GUI.Button.CreateSimpleButton('but1', 'reset camera')
+      button.width = '150px'
+      button.height = '40px'
+      button.color = 'black'
+      button.cornerRadius = 7
+      button.background = 'orange'
+      button.top = (-1 * window.innerHeight - 600) / 4
+      button.left = (-1 * window.innerWidth) / 4
+      button.onPointerUpObservable.add(function () {
+        if (camera) {
+          camera.restoreState()
+        }
+      })
+      textureUI.addControl(button)
+    },
+    onCreateLabel (textureUI, name, offsetX, offsetY, lineX, lineY, mesh) {
+      const rect = new GUI.Rectangle()
+      rect.width = 0.15
+      rect.height = '40px'
+      rect.cornerRadius = 7
+      rect.color = 'yellow'
+      rect.thickness = 2
+      rect.background = 'black'
+      textureUI.addControl(rect)
+
+      const label = new GUI.TextBlock()
+      label.text = name
+      rect.addControl(label)
+
+      rect.linkWithMesh(mesh)
+      rect.linkOffsetX = offsetX
+      rect.linkOffsetY = offsetY
+
+      /// Draw the line
+      const line = new GUI.Line()
+      line.lineWidth = 4
+      line.color = 'yellow'
+      line.x2 = lineX
+      line.y2 = lineY
+      textureUI.addControl(line)
+      line.linkWithMesh(mesh)
+      line.connectedControl = rect
     }
   }
 }
