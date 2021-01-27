@@ -23,7 +23,19 @@ export default {
 
     this.motor = engine
 
-    const createScene = function () {
+    const scene = this.onCreateScene(engine, canvas)
+
+    engine.runRenderLoop(function () {
+      scene.render()
+    })
+  },
+  methods: {
+    onResize () {
+      if (this.motor) {
+        this.motor.resize()
+      }
+    },
+    onCreateScene (engine, canvas) {
       const scene = new BABYLON.Scene(engine)
       scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
 
@@ -38,14 +50,9 @@ export default {
       )
 
       camera.wheelPrecision = 80
+      camera.storeState()
       camera.attachControl(canvas, true)
 
-      // Light
-      // const light = new BABYLON.HemisphericLight(
-      //   'light',
-      //   new BABYLON.Vector3(0, 1, 0),
-      //   scene
-      // )
       const light = new BABYLON.DirectionalLight(
         'dirlight',
         new BABYLON.Vector3(-1, -2, -1),
@@ -53,6 +60,9 @@ export default {
       )
       light.position = new BABYLON.Vector3(1, 0, 2)
       light.intensity = 1
+
+      /// Create GUI
+      this.onCreateButton(camera)
 
       BABYLON.SceneLoader.ImportMeshAsync(
         'jembatan_Cube.003',
@@ -74,19 +84,26 @@ export default {
       }).catch(err => console.log(err.message))
 
       return scene
-    }
+    },
+    onCreateButton (camera) {
+      const button = document.createElement('button')
+      button.style.top = '100px'
+      button.style.left = '30px'
+      button.textContent = 'reset camera'
+      button.style.width = '120px'
+      button.style.height = '60px'
 
-    const scene = createScene()
+      button.setAttribute = ('id', 'but')
+      button.style.position = 'absolute'
+      button.style.color = 'black'
 
-    engine.runRenderLoop(function () {
-      scene.render()
-    })
-  },
-  methods: {
-    onResize () {
-      if (this.motor) {
-        this.motor.resize()
-      }
+      document.body.appendChild(button)
+
+      button.addEventListener('click', () => {
+        if (camera) {
+          camera.restoreState()
+        }
+      })
     }
   }
 }
