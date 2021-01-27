@@ -1,7 +1,29 @@
 <template>
-  <q-page class="flex flex-center">
-    <div class="row items-center justify-center full-width q-my-sm">
-      <div class="col-12 col-md-4 q-px-md">
+  <q-page>
+    <div class="row justify-center q-py-md">
+      <div class="col-12 col-md-8">
+        <Jembatan :style="{ height: jembatanHeight + 'px' }" />
+      </div>
+
+      <div class="col-12 col-md-4 q-px-md q-mb-md">
+        <q-card class="bg-dark text-white q-mb-md">
+          <q-card-section>
+            <div class="text-h6">🌉 Perkiraan Toleransi Keamanan</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            Status sinyal: <span class="text-uppercase text-bold text-h3">online</span>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            Status pantauan: <span class="text-uppercase text-bold text-h3">aman</span>
+          </q-card-section>
+
+          <q-card-actions align="right" class="bg-white text-dark">
+            <q-btn flat label="HUBUNGI KAMI" @click="goToExternal('https://bit.ly/ChatBBTA3')" />
+          </q-card-actions>
+        </q-card>
+
         <q-list bordered class="rounded-borders">
           <q-item-label header>Live Data Sensor</q-item-label>
 
@@ -72,10 +94,6 @@
             </q-item-section>
           </q-item>
         </q-list>
-      </div>
-
-      <div class="col-12 col-md-8 q-px-sm">
-        <Jembatan />
       </div>
     </div>
   </q-page>
