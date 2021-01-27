@@ -1,4 +1,5 @@
 import * as BABYLON from 'babylonjs'
+import * as GUI from 'babylonjs-gui'
 import 'babylonjs-loaders'
 
 export default {
@@ -61,49 +62,90 @@ export default {
       light.position = new BABYLON.Vector3(1, 0, 2)
       light.intensity = 1
 
-      /// Create GUI
-      this.onCreateButton(camera)
-
       BABYLON.SceneLoader.ImportMeshAsync(
-        'jembatan_Cube.003',
+        ['jembatan', 'acc', 'strain1', 'strain2'],
         '/models/',
         'jembatan.obj',
         scene
       ).then(result => {
         const jembatan = result.meshes[0]
-        const jembatanMaterial = new BABYLON.StandardMaterial('boxMat', scene)
+        const jembatanMaterial = new BABYLON.StandardMaterial('jembatanMat', scene)
         jembatanMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8)
         jembatanMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+        jembatan.material = jembatanMaterial
+
+        const accSensor = result.meshes[1]
+        const accMaterial = new BABYLON.StandardMaterial('accMat', scene)
+        accMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0)
+        accMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+        accSensor.material = accMaterial
+
+        const strainSensor1 = result.meshes[2]
+        const strainSensor2 = result.meshes[3]
+        const strainMaterial = new BABYLON.StandardMaterial('strainMat', scene)
+        strainMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0)
+        strainMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+        strainSensor1.material = strainMaterial
+        strainSensor2.material = strainMaterial
 
         // Shadow
         const shadowGenerator = new BABYLON.ShadowGenerator(1024, light)
         shadowGenerator.addShadowCaster(jembatan)
         shadowGenerator.usePoissonSampling = true
 
-        jembatan.material = jembatanMaterial
+        /// Create GUI
+        const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI')
+        this.onCreateButton(advancedTexture, camera)
+        this.onCreateLabel(advancedTexture, 'accelerometer', 0, -220, 0, 20, accSensor)
+        this.onCreateLabel(advancedTexture, 'strain 1', 220, 0, -91, 0, strainSensor1)
+        this.onCreateLabel(advancedTexture, 'strain 2', -220, 0, 91, 0, strainSensor2)
       }).catch(err => console.log(err.message))
 
       return scene
     },
-    onCreateButton (camera) {
-      const button = document.createElement('button')
-      button.style.top = '100px'
-      button.style.left = '30px'
-      button.textContent = 'reset camera'
-      button.style.width = '120px'
-      button.style.height = '60px'
-
-      button.setAttribute = ('id', 'but')
-      button.style.position = 'absolute'
-      button.style.color = 'black'
-
-      document.body.appendChild(button)
-
-      button.addEventListener('click', () => {
+    onCreateButton (textureUI, camera) {
+      const button = GUI.Button.CreateSimpleButton('but1', 'reset camera')
+      button.width = '150px'
+      button.height = '40px'
+      button.color = 'black'
+      button.cornerRadius = 7
+      button.background = 'orange'
+      button.top = (-1 * window.innerHeight - 600) / 4
+      button.left = (-1 * window.innerWidth) / 4
+      button.onPointerUpObservable.add(function () {
         if (camera) {
           camera.restoreState()
         }
       })
+      textureUI.addControl(button)
+    },
+    onCreateLabel (textureUI, name, offsetX, offsetY, lineX, lineY, mesh) {
+      const rect = new GUI.Rectangle()
+      rect.width = 0.15
+      rect.height = '40px'
+      rect.cornerRadius = 7
+      rect.color = 'yellow'
+      rect.thickness = 2
+      rect.background = 'black'
+      textureUI.addControl(rect)
+
+      const label = new GUI.TextBlock()
+      label.text = name
+      rect.addControl(label)
+
+      rect.linkWithMesh(mesh)
+      rect.linkOffsetX = offsetX
+      rect.linkOffsetY = offsetY
+
+      /// Draw the line
+      const line = new GUI.Line()
+      line.lineWidth = 4
+      line.color = 'yellow'
+      line.x2 = lineX
+      line.y2 = lineY
+      textureUI.addControl(line)
+      line.linkWithMesh(mesh)
+      line.connectedControl = rect
     }
   }
 }
