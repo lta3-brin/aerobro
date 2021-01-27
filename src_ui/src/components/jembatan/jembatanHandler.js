@@ -95,36 +95,19 @@ export default {
 
         /// Create GUI
         const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI')
-        this.onCreateButton(advancedTexture, camera)
         this.onCreateLabel(advancedTexture, 'accelerometer', 0, -220, 0, 20, accSensor)
-        this.onCreateLabel(advancedTexture, 'strain 1', 220, 0, -91, 0, strainSensor1)
-        this.onCreateLabel(advancedTexture, 'strain 2', -220, 0, 91, 0, strainSensor2)
+        this.onCreateLabel(advancedTexture, 'strain 1', 150, 110, 0, -20, strainSensor1)
+        this.onCreateLabel(advancedTexture, 'strain 2', -150, 110, 0, -20, strainSensor2)
       }).catch(err => console.log(err.message))
 
       return scene
-    },
-    onCreateButton (textureUI, camera) {
-      const button = GUI.Button.CreateSimpleButton('but1', 'reset camera')
-      button.width = '150px'
-      button.height = '40px'
-      button.color = 'black'
-      button.cornerRadius = 7
-      button.background = 'orange'
-      button.top = (-1 * window.innerHeight - 600) / 4
-      button.left = (-1 * window.innerWidth) / 4
-      button.onPointerUpObservable.add(function () {
-        if (camera) {
-          camera.restoreState()
-        }
-      })
-      textureUI.addControl(button)
     },
     onCreateLabel (textureUI, name, offsetX, offsetY, lineX, lineY, mesh) {
       const rect = new GUI.Rectangle()
       rect.width = 0.15
       rect.height = '40px'
       rect.cornerRadius = 7
-      rect.color = 'yellow'
+      rect.color = 'orange'
       rect.thickness = 2
       rect.background = 'black'
       textureUI.addControl(rect)
@@ -140,7 +123,7 @@ export default {
       /// Draw the line
       const line = new GUI.Line()
       line.lineWidth = 4
-      line.color = 'yellow'
+      line.color = 'orange'
       line.x2 = lineX
       line.y2 = lineY
       textureUI.addControl(line)
