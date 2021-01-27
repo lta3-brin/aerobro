@@ -8,15 +8,15 @@
       <div class="col-12 col-md-3 q-px-md q-mb-md">
         <q-card class="bg-warning text-black q-mb-md">
           <q-card-section>
-            <div class="text-h6">🌉 Perkiraan Toleransi Keamanan</div>
+            <div class="text-h6">🌉 Perkiraan Keamanan</div>
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            Status sinyal: <span class="text-uppercase text-bold text-h3">online</span>
+            Sinyal: <span class="text-uppercase text-bold text-h3">online</span>
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            Status pantauan: <span class="text-uppercase text-bold text-h3">aman</span>
+            Pantauan: <span class="text-uppercase text-bold text-h3">aman</span>
           </q-card-section>
 
           <q-card-actions align="right" class="bg-white text-dark">
