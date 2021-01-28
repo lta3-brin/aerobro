@@ -34,12 +34,35 @@
 
             <q-item-section top>
               <q-item-label lines="1">
-                <span class="text-weight-medium">Data Strain/Stress: </span>
+                <span class="text-weight-medium">Data Strain/Stress 1: </span>
                 <span class="text-grey-8"> [-]</span>
               </q-item-label>
 
               <q-item-label lines="1" class="q-mt-xs text-weight-bold text-h3 text-uppercase">
-                0.24
+                {{ sensor.strain1 }}
+              </q-item-label>
+            </q-item-section>
+
+            <q-item-section center side>
+              <q-avatar color="negative" text-color="white"></q-avatar>
+            </q-item-section>
+          </q-item>
+
+          <q-separator spaced />
+
+          <q-item>
+            <q-item-section avatar center>
+              <q-icon name="sensors" color="black" size="34px" />
+            </q-item-section>
+
+            <q-item-section top>
+              <q-item-label lines="1">
+                <span class="text-weight-medium">Data Strain/Stress 2: </span>
+                <span class="text-grey-8"> [-]</span>
+              </q-item-label>
+
+              <q-item-label lines="1" class="q-mt-xs text-weight-bold text-h3 text-uppercase">
+                {{ sensor.strain2 }}
               </q-item-label>
             </q-item-section>
 
@@ -62,7 +85,7 @@
               </q-item-label>
 
               <q-item-label lines="1" class="q-mt-xs text-weight-bold text-h3 text-uppercase">
-                0.04
+                {{ sensor.acc }}
               </q-item-label>
             </q-item-section>
 
@@ -85,7 +108,7 @@
               </q-item-label>
 
               <q-item-label lines="1" class="q-mt-xs text-weight-bold text-h3 text-uppercase">
-                1.20
+                {{ sensor.disp }}
               </q-item-label>
             </q-item-section>
 
