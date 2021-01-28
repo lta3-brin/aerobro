@@ -51,6 +51,7 @@ export default {
       )
 
       camera.wheelPrecision = 80
+      camera.minZ = 0.1
       camera.storeState()
       camera.attachControl(canvas, true)
 
@@ -95,38 +96,42 @@ export default {
 
         /// Create GUI
         const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI')
-        this.onCreateButton(advancedTexture, camera)
+
+        this.onCreateButtonReset(advancedTexture, camera)
         this.onCreateLabel(advancedTexture, 'accelerometer', 0, -220, 0, 20, accSensor)
-        this.onCreateLabel(advancedTexture, 'strain 1', 220, 0, -91, 0, strainSensor1)
-        this.onCreateLabel(advancedTexture, 'strain 2', -220, 0, 91, 0, strainSensor2)
+        this.onCreateLabel(advancedTexture, 'strain 1', 150, 110, 0, -20, strainSensor1)
+        this.onCreateLabel(advancedTexture, 'strain 2', -150, 110, 0, -20, strainSensor2)
       }).catch(err => console.log(err.message))
 
       return scene
     },
-    onCreateButton (textureUI, camera) {
-      const button = GUI.Button.CreateSimpleButton('but1', 'reset camera')
-      button.width = '150px'
-      button.height = '40px'
-      button.color = 'black'
-      button.cornerRadius = 7
-      button.background = 'orange'
-      button.top = (-1 * window.innerHeight - 600) / 4
-      button.left = (-1 * window.innerWidth) / 4
-      button.onPointerUpObservable.add(function () {
-        if (camera) {
-          camera.restoreState()
-        }
+    onCreateButtonReset (textureUI, camera) {
+      const buttonReset = GUI.Button.CreateSimpleButton('butReset', '📷 reset')
+      buttonReset.width = '150px'
+      buttonReset.height = '40px'
+      buttonReset.color = 'black'
+      buttonReset.cornerRadius = 7
+      buttonReset.thickness = 3
+      buttonReset.background = 'white'
+      buttonReset.left = 10
+      buttonReset.top = -10
+      buttonReset.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT
+      buttonReset.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM
+
+      buttonReset.onPointerUpObservable.add(function () {
+        camera.restoreState()
       })
-      textureUI.addControl(button)
+
+      textureUI.addControl(buttonReset)
     },
     onCreateLabel (textureUI, name, offsetX, offsetY, lineX, lineY, mesh) {
       const rect = new GUI.Rectangle()
-      rect.width = 0.15
+      rect.width = 0.1
       rect.height = '40px'
       rect.cornerRadius = 7
-      rect.color = 'yellow'
-      rect.thickness = 2
-      rect.background = 'black'
+      rect.color = 'black'
+      rect.thickness = 3
+      rect.background = 'white'
       textureUI.addControl(rect)
 
       const label = new GUI.TextBlock()
@@ -140,7 +145,7 @@ export default {
       /// Draw the line
       const line = new GUI.Line()
       line.lineWidth = 4
-      line.color = 'yellow'
+      line.color = 'orange'
       line.x2 = lineX
       line.y2 = lineY
       textureUI.addControl(line)

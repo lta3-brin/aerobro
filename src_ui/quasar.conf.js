@@ -19,7 +19,7 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-
+      'socket',
       'axios'
     ],
 
@@ -70,6 +70,13 @@ module.exports = function (/* ctx */) {
           loader: 'eslint-loader',
           exclude: /node_modules/
         })
+      },
+
+      // Environment variable
+      // https://quasar.dev/quasar-cli/handling-process-env#Import-based-on-process.env
+      env: {
+        SOCKET_ADDRESS: process.env.SOCKET_ADDRESS,
+        SOCKET_ROOM_DEFAULT: process.env.SOCKET_ROOM_DEFAULT
       }
     },
 
