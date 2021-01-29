@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
 
 if (process.env.SOCKET_PORT) {
   http.listen(process.env.SOCKET_PORT, () => {
-    console.log('Server socket berhasil dijalankan *:3000')
+    console.log(`Server socket berhasil dijalankan *:${ process.env.SOCKET_PORT }`)
   })
 } else {
   console.log('Definisikan Env. untuk SOCKET_PORT')

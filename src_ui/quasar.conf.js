@@ -76,7 +76,13 @@ module.exports = function (/* ctx */) {
       // https://quasar.dev/quasar-cli/handling-process-env#Import-based-on-process.env
       env: {
         SOCKET_ADDRESS: process.env.SOCKET_ADDRESS,
-        SOCKET_ROOM_DEFAULT: process.env.SOCKET_ROOM_DEFAULT
+        SOCKET_ROOM_DEFAULT: process.env.SOCKET_ROOM_DEFAULT,
+        ACC_THRESHOLD_MIN: process.env.ACC_THRESHOLD_MIN,
+        ACC_THRESHOLD_MAX: process.env.ACC_THRESHOLD_MAX,
+        STRAIN_THRESHOLD_MIN: process.env.STRAIN_THRESHOLD_MIN,
+        STRAIN_THRESHOLD_MAX: process.env.STRAIN_THRESHOLD_MAX,
+        DISP_THRESHOLD_MIN: process.env.DISP_THRESHOLD_MIN,
+        DISP_THRESHOLD_MAX: process.env.DISP_THRESHOLD_MAX
       }
     },
 
