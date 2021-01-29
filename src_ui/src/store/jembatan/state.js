@@ -4,8 +4,7 @@ export default function () {
     sensor: {
       acc: 0,
       strain1: 0,
-      strain2: 0,
-      disp: 0
+      strain2: 0
     }
   }
 }
