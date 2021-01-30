@@ -4,4 +4,4 @@ const disconnectHandler = (socket) => {
   })
 }
 
-module.exports = { disconnect: disconnectHandler }
+module.exports = { disconnectHandler }
