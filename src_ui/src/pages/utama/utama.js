@@ -20,9 +20,14 @@ export default {
       openURL(url, null, { noopener: true, noreferrer: true })
     },
     onListenSocket () {
-      this.$socket.on(process.env.SOCKET_ROOM_DEFAULT, (message) => {
-        this.$store.commit('jembatan/sensorMutation', message)
-      })
+      if (this.$socket.connected) {
+        this.$socket.on(process.env.SOCKET_ROOM_DEFAULT, message => {
+          message.sinyal = 'online'
+          this.$store.commit('jembatan/sensorMutation', message)
+        })
+      } else {
+        this.$store.commit('jembatan/sensorOfflineMutation')
+      }
     }
   },
   computed: {
