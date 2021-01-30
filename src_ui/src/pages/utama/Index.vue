@@ -12,7 +12,7 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            Sinyal: <span class="text-uppercase text-bold text-h3">online</span>
+            Sinyal: <span class="text-uppercase text-bold text-h3">{{ sensor.sinyal }}</span>
           </q-card-section>
 
           <q-card-section class="q-pt-none">

@@ -5,7 +5,7 @@ _environment variable_ sebagai berikut:
 ```
 SOCKET_PORT=8765                     #socket
 SOCKET_ROOM_DEFAULT=channel          #socket,ui
-SOCKET_ADDRESS=http://localhost:8765 #socket,ui
+SOCKET_ADDRESS=http://localhost:8765 #ui
 ACC_THRESHOLD_MIN=0.3                #ui
 ACC_THRESHOLD_MAX=0.7                #ui
 STRAIN_THRESHOLD_MIN=0.4             #ui
