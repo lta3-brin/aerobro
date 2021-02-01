@@ -12,10 +12,6 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            Sinyal: <span class="text-uppercase text-bold text-h3">{{ sensor.sinyal }}</span>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
             Pantauan: <span class="text-uppercase text-bold text-h3">aman</span>
           </q-card-section>
 
