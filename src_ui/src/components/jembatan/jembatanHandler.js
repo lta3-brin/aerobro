@@ -98,9 +98,9 @@ export default {
         const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI')
 
         this.onCreateButtonReset(advancedTexture, camera)
-        this.onCreateLabel(advancedTexture, 'accelerometer', 0, -220, 0, 20, accSensor)
-        this.onCreateLabel(advancedTexture, 'strain 1', 150, 110, 0, -20, strainSensor1)
-        this.onCreateLabel(advancedTexture, 'strain 2', -150, 110, 0, -20, strainSensor2)
+        this.onCreateLabel(advancedTexture, 'accelerometer', 0, 150, 0, -20, accSensor)
+        this.onCreateLabel(advancedTexture, 'strain 1', 150, -110, 0, 20, strainSensor1)
+        this.onCreateLabel(advancedTexture, 'strain 2', -150, -110, 0, 20, strainSensor2)
       }).catch(err => console.log(err.message))
 
       return scene
@@ -126,7 +126,7 @@ export default {
     },
     onCreateLabel (textureUI, name, offsetX, offsetY, lineX, lineY, mesh) {
       const rect = new GUI.Rectangle()
-      rect.width = 0.1
+      rect.width = 0.18
       rect.height = '40px'
       rect.cornerRadius = 7
       rect.color = 'black'
