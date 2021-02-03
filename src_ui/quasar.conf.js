@@ -82,7 +82,8 @@ module.exports = function (/* ctx */) {
         STRAIN_THRESHOLD_MIN: process.env.STRAIN_THRESHOLD_MIN,
         STRAIN_THRESHOLD_MAX: process.env.STRAIN_THRESHOLD_MAX,
         DISP_THRESHOLD_MIN: process.env.DISP_THRESHOLD_MIN,
-        DISP_THRESHOLD_MAX: process.env.DISP_THRESHOLD_MAX
+        DISP_THRESHOLD_MAX: process.env.DISP_THRESHOLD_MAX,
+        REPO_NAME: process.env.REPO_NAME
       }
     },
 
