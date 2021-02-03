@@ -5,3 +5,7 @@ export function cameraGetter (state) {
 export function sensorGetter (state) {
   return state.sensor
 }
+
+export function versionGetter (state) {
+  return state.version
+}
