@@ -6,7 +6,12 @@
           Aerobro
         </q-toolbar-title>
 
-        <div>v{{ $q.version }}</div>
+        <div class="q-mr-md">{{ version }}</div>
+
+        <div class="q-gutter-x-sm">
+          <q-btn flat round color="white" icon="home" @click="$router.push({ name: 'utama' })" />
+          <q-btn flat round color="white" icon="receipt" @click="$router.push({ name: 'ringkasan' })" />
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -16,11 +21,4 @@
   </q-layout>
 </template>
 
-<script>
-export default {
-  name: 'MainLayout',
-  data () {
-    return {}
-  }
-}
-</script>
+<script src="./main.js" />
