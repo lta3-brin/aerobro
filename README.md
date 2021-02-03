@@ -12,4 +12,5 @@ STRAIN_THRESHOLD_MIN=0.4             #ui
 STRAIN_THRESHOLD_MAX=0.6             #ui
 DISP_THRESHOLD_MIN=0.4               #ui
 DISP_THRESHOLD_MAX=0.6               #ui
+REPO_NAME=aerobro                    #ui
 ```
