@@ -10,14 +10,20 @@ jobs:
   deploy_socket:
     name: Deploy SocketIO
     runs-on: server19
+    env:
+      SOCKET_PORT: 8765
+      SOCKET_ROOM_DEFAULT: ${{ secrets.SOCKET_ROOM_DEFAULT }}
     steps:
-      - uses: actions/checkout@v2
-      - run: |
+      - name: Checkout Latest Version
+        uses: actions/checkout@v2
+
+      - name: Running Socket
+        run: |
           cd src_socket
           node -v
           npm -v
-          pwd
           npm install
+          pm2 restart aerobrosocket
 
   update_release_draft:
     name: Update Release Draft
