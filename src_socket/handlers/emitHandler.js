@@ -5,7 +5,7 @@ const emitSensor = (io) => {
       strain1: Math.random().toFixed(3),
       strain2: Math.random().toFixed(3)
     })
-  }, 1000)
+  }, 10000)
 }
 
 module.exports = { emitSensor }
