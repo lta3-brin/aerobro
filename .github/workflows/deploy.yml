@@ -32,6 +32,11 @@ jobs:
       - name: Checkout Latest Version
         uses: actions/checkout@v2
 
+      - name: Install NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
       - name: Check and Install Dependencies
         uses: actions/setup-node@v2
         with:
