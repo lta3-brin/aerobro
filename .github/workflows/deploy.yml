@@ -8,16 +8,16 @@ on:
 
 jobs:
   deploy_socket:
+    name: Deploy SocketIO
     runs-on: server19
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
       - run: |
+          cd src_socket
           node -v
           npm -v
           pwd
+          npm install
 
   update_release_draft:
     name: Update Release Draft
