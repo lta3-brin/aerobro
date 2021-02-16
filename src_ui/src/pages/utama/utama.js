@@ -21,7 +21,6 @@ export default {
     },
     onListenSocket () {
       this.$socket.on(process.env.SOCKET_ROOM_DEFAULT, message => {
-        message.sinyal = 'online'
         this.$store.commit('jembatan/sensorMutation', message)
       })
     }
