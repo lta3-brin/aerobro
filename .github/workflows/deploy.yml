@@ -14,15 +14,26 @@ jobs:
       - name: Checkout Latest Version
         uses: actions/checkout@v2
 
+      - name: Install NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
+      - name: Check and Install Dependencies
+        run: |
+          cd src_ui
+          node -v
+          npm -v
+          npm install
+          npm install -g pm2
+
       - name: Running Socket
         env:
           SOCKET_PORT: 8765
           SOCKET_ROOM_DEFAULT: ${{ secrets.SOCKET_ROOM_DEFAULT }}
         run: |
           cd src_socket
-          node -v
-          npm -v
-          npm install
+          pm2 start --name aerobrosocket index.js
           pm2 restart aerobrosocket --update-env
 
   deploy_ui:
