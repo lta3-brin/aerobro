@@ -20,8 +20,11 @@ export default {
       openURL(url, null, { noopener: true, noreferrer: true })
     },
     onListenSocket () {
+      this.$socket.on('connect', () => {
+        this.$socket.sendBuffer = []
+      })
+
       this.$socket.on(process.env.SOCKET_ROOM_DEFAULT, message => {
-        message.sinyal = 'online'
         this.$store.commit('jembatan/sensorMutation', message)
       })
     }
