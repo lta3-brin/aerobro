@@ -7,6 +7,64 @@ on:
       - main
 
 jobs:
+  deploy_socket:
+    name: Deploy SocketIO
+    runs-on: server19
+    steps:
+      - name: Checkout Latest Version
+        uses: actions/checkout@v2
+
+      - name: Check and Install Dependencies
+        run: |
+          cd src_socket
+          node -v
+          npm -v
+          npm install
+
+      - name: Running Socket
+        env:
+          SOCKET_PORT: 8765
+          SOCKET_ROOM_DEFAULT: ${{ secrets.SOCKET_ROOM_DEFAULT }}
+        run: |
+          cd src_socket
+          pm2 start --name aerobrosocket index.js
+          pm2 restart aerobrosocket --update-env
+
+  deploy_ui:
+    name: Deploy UI
+    runs-on: server15
+    steps:
+      - name: Checkout Latest Version
+        uses: actions/checkout@v2
+
+      - name: Install NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
+      - name: Check and Install Dependencies
+        run: |
+          cd src_ui
+          node -v
+          npm -v
+          npm install
+          npm install -g @quasar/cli
+
+      - name: Build UI
+        env:
+          SOCKET_ROOM_DEFAULT: ${{ secrets.SOCKET_ROOM_DEFAULT }}
+          SOCKET_ADDRESS: ${{ secrets.SOCKET_ADDRESS }}
+          ACC_THRESHOLD_MIN: 0.3
+          ACC_THRESHOLD_MAX: 0.7
+          STRAIN_THRESHOLD_MIN: 0.4
+          STRAIN_THRESHOLD_MAX: 0.6
+          DISP_THRESHOLD_MIN: 0.4
+          DISP_THRESHOLD_MAX: 0.6
+          REPO_NAME: aerobro
+        run: |
+          cd src_ui
+          quasar build
+
   update_release_draft:
     name: Update Release Draft
     runs-on: ubuntu-latest
