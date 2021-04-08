@@ -3,6 +3,10 @@ Repositori pengembangan riset aerobro. Selama pengembangan dan produksi aplikasi
 _environment variable_ sebagai berikut:
 
 ```
+MQTT_ADDR=tcp://localhost:1883       #main
+MQTT_USER=coba                       #main
+MQTT_PWD=rahasia                     #main
+MSG_TOPIC=topik                      #main
 SOCKET_PORT=8765                     #socket
 SOCKET_ROOM_DEFAULT=channel          #socket,ui
 SOCKET_ADDRESS=http://localhost:8765 #ui
