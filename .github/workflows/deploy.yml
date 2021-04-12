@@ -2,49 +2,36 @@ name: Pengembangan Aerobro
 
 on:
   push:
-    branches:
-      - master
-      - main
+    tags:
+      - '*'
 
 jobs:
-  deploy_socket:
-    name: Deploy SocketIO
-    runs-on: server19
+  upload_aerobro:
+    name: Upload Aplikasi Aerobro
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout Latest Version
         uses: actions/checkout@v2
 
-      - name: Check and Install Dependencies
+      - name: Init Directory & envfile
         run: |
-          cd src_socket
-          node -v
-          npm -v
-          npm install
+          mkdir aerobro
+          cat > ./aerobro/.env << ENDOFFILE
+          MQTT_ADDR=${{ secrets.MQTT_ADDR }}
+          MQTT_USER=${{ secrets.MQTT_USER }}
+          MQTT_PWD=${{ secrets.MQTT_PWD }}
+          MSG_TOPIC=${{ secrets.MSG_TOPIC }}
+          ENDOFFILE
 
-      - name: Running Socket
-        env:
-          SOCKET_PORT: 8765
-          SOCKET_ROOM_DEFAULT: ${{ secrets.SOCKET_ROOM_DEFAULT }}
-        run: |
-          cd src_socket
-          pm2 start --name aerobrosocket index.js
-          pm2 restart aerobrosocket --update-env
-
-  deploy_ui:
-    name: Deploy UI
-    runs-on: server15
-    steps:
-      - name: Checkout Latest Version
-        uses: actions/checkout@v2
 
       - name: Install NodeJS
         uses: actions/setup-node@v2
         with:
-          node-version: '12.x'
+          node-version: '14.x'
 
       - name: Check and Install Dependencies
         run: |
-          cd src_ui
+          cd ui
           node -v
           npm -v
           npm install
@@ -62,13 +49,30 @@ jobs:
           DISP_THRESHOLD_MAX: 0.6
           REPO_NAME: aerobro
         run: |
-          cd src_ui
+          mkdir aerobro/spa
+          cd ui
           quasar build
+          cp -r dist/spa/* ../aerobro
 
-  update_release_draft:
-    name: Update Release Draft
-    runs-on: ubuntu-latest
-    steps:
-      - uses: release-drafter/release-drafter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Install Rust Toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Build Worker Using Cargo
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+
+      - name: Move to Aerobro Directory
+        run: |
+          mv target/release/aerobro aeronitium/
+          ls aerobro/
+
+      - name: Upload UI to Release
+        uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: aerobro/
+          allow_override: true
