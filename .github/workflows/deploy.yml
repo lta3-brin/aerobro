@@ -67,7 +67,7 @@ jobs:
 
       - name: Move to Aerobro Directory
         run: |
-          mv target/release/aerobro aeronitium/
+          mv target/release/aerobro aerobro/
           ls aerobro/
 
       - name: Upload UI to Release
