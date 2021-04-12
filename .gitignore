@@ -1,28 +1,28 @@
 /target
 
 # Quasar
-.DS_Store
-.vscode
-.thumbs.db
+*.DS_Store
+*.vscode
+*.thumbs.db
 node_modules
 
 # Quasar core related directories
 .quasar
-/dist
+ui/dist
 
 # Cordova related directories and files
-/src-cordova/node_modules
-/src-cordova/platforms
-/src-cordova/plugins
-/src-cordova/www
+ui/src-cordova/node_modules
+ui/src-cordova/platforms
+ui/src-cordova/plugins
+ui/src-cordova/www
 
 # Capacitor related directories and files
-/src-capacitor/www
-/src-capacitor/node_modules
+ui/src-capacitor/www
+ui/src-capacitor/node_modules
 
 # BEX related directories and files
-/src-bex/www
-/src-bex/js/core
+ui/src-bex/www
+ui/src-bex/js/core
 
 # Log files
 npm-debug.log*
