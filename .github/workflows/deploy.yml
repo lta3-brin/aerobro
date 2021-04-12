@@ -1,4 +1,4 @@
-name: Pengembangan Aerobro
+name: Deploy Aerobro
 
 on:
   push:
@@ -22,7 +22,6 @@ jobs:
           MQTT_PWD=${{ secrets.MQTT_PWD }}
           MSG_TOPIC=${{ secrets.MSG_TOPIC }}
           ENDOFFILE
-
 
       - name: Install NodeJS
         uses: actions/setup-node@v2
@@ -76,3 +75,15 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: aerobro/
           allow_override: true
+
+  deploy_aerobro_ui:
+    name: Deploy Aerobro UI
+    needs: upload_aerobro
+    runs-on: server15
+    steps:
+      - name: Download Assets
+        run: |
+          rm -rf *
+          wget --no-check-certificate https://github.com/userbaruu/aerobro/releases/latest/download/aerobro.tgz
+          tar -xvf aerobro.tgz
+          rm aerobro.tgz
