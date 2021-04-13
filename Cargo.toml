@@ -9,3 +9,5 @@ edition = "2018"
 [dependencies]
 dotenv = "0.15"
 paho-mqtt = "0.9"
+tungstenite = "0.13"
+crossbeam-channel = "0.5"
