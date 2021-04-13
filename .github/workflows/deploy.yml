@@ -89,3 +89,4 @@ jobs:
           mv aerobros/* .
           rm -r aerobros/
           rm aerobro.tgz
+          systemctl --user restart aerobro.service
