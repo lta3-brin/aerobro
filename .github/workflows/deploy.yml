@@ -83,6 +83,7 @@ jobs:
     steps:
       - name: Download Assets
         run: |
+          rm -rf *
           wget --no-check-certificate https://github.com/userbaruu/aerobro/releases/latest/download/aerobro.tgz
           tar -xvf aerobro.tgz
           mv aerobro/ aerobros/
