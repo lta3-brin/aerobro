@@ -24,7 +24,7 @@ export default {
       openURL(url, null, { noopener: true, noreferrer: true })
     },
     onListenSocket () {
-      const addr = `ws://${process.env.SOCKET_ADDRESS}`
+      const addr = process.env.WS_ADDRESS
 
       this.connection = new WebSocket(addr)
       this.connection.onopen = async () => {

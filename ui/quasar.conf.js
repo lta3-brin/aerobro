@@ -74,7 +74,7 @@ module.exports = function (/* ctx */) {
       // Environment variable
       // https://quasar.dev/quasar-cli/handling-process-env#Import-based-on-process.env
       env: {
-        SOCKET_ADDRESS: process.env.SOCKET_ADDRESS,
+        WS_ADDRESS: process.env.WS_ADDRESS,
         ACC_THRESHOLD_MIN: process.env.ACC_THRESHOLD_MIN,
         ACC_THRESHOLD_MAX: process.env.ACC_THRESHOLD_MAX,
         STRAIN_THRESHOLD_MIN: process.env.STRAIN_THRESHOLD_MIN,
