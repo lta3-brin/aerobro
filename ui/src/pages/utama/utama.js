@@ -8,6 +8,7 @@ export default {
   },
   data () {
     return {
+      connection: null,
       jembatanHeight: 0
     }
   },
@@ -15,18 +16,39 @@ export default {
     this.jembatanHeight = window.innerHeight - 82
     this.onListenSocket()
   },
+  destroyed () {
+    this.connection.close()
+  },
   methods: {
     goToExternal (url) {
       openURL(url, null, { noopener: true, noreferrer: true })
     },
     onListenSocket () {
-      this.$socket.on('connect', () => {
-        this.$socket.sendBuffer = []
-      })
+      const addr = `ws://${process.env.SOCKET_ADDRESS}`
 
-      this.$socket.on(process.env.SOCKET_ROOM_DEFAULT, message => {
-        this.$store.commit('jembatan/sensorMutation', message)
-      })
+      this.connection = new WebSocket(addr)
+      this.connection.onopen = async () => {
+        const pesan = 'Mencoba terhubung dengan socket Aerobro...'
+
+        console.log(pesan)
+      }
+
+      this.connection.onmessage = (event) => {
+        const data = event.data
+        const payload = data.split(',')
+
+        this.$store.commit('jembatan/sensorMutation', {
+          acc: parseFloat(payload[0]),
+          strain1: parseFloat(payload[1]),
+          strain2: parseFloat(payload[2])
+        })
+      }
+
+      this.connection.onclose = () => {
+        const pesan = 'Koneksi tidak terhubung dengan socket Aerobro...'
+
+        console.log(pesan)
+      }
     }
   },
   computed: {
