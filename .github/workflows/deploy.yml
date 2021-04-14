@@ -39,8 +39,7 @@ jobs:
 
       - name: Build UI
         env:
-          SOCKET_ROOM_DEFAULT: ${{ secrets.SOCKET_ROOM_DEFAULT }}
-          SOCKET_ADDRESS: ${{ secrets.SOCKET_ADDRESS }}
+          WS_ADDRESS: ${{ secrets.WS_ADDRESS }}
           ACC_THRESHOLD_MIN: 0.3
           ACC_THRESHOLD_MAX: 0.7
           STRAIN_THRESHOLD_MIN: 0.4
