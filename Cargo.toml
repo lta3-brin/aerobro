@@ -7,7 +7,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+actix = "0.10"
 dotenv = "0.15"
+actix-web = "3.3"
 paho-mqtt = "0.9"
-tungstenite = "0.13"
-crossbeam-channel = "0.5"
+actix-web-actors = "3.0.0"
