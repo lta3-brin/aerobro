@@ -1,6 +1,8 @@
 use paho_mqtt as mqtt;
 use std::time::Duration;
-use crossbeam_channel::Sender;
+use std::net::TcpStream;
+use tungstenite::{WebSocket, Message};
+use crossbeam_channel::{Sender, Receiver};
 use crate::errors::AppErrors;
 use crate::configs::AppConfigs;
 
@@ -42,6 +44,16 @@ pub fn run_mqtt(
             s.send(msg.to_string())?;
         }
     }
+
+    Ok(())
+}
+
+pub fn send_message(
+    r: Receiver<String>,
+    ws: &mut WebSocket<TcpStream>
+) -> Result<(), AppErrors> {
+    let message = r.recv()?;
+    ws.write_message(Message::from(message))?;
 
     Ok(())
 }
