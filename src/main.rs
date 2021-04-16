@@ -2,14 +2,18 @@ mod configs;
 mod errors;
 mod handlers;
 
+use std::fs::File;
+use std::io::Read;
+use std::sync::Arc;
 use dotenv::dotenv;
 use std::thread::spawn;
+use tungstenite::accept;
 use std::net::TcpListener;
 use crossbeam_channel::unbounded;
-use tungstenite::{accept, Message};
+use native_tls::{Identity, TlsAcceptor};
 use crate::errors::AppErrors;
 use crate::configs::get_configs;
-use crate::handlers::run_mqtt;
+use crate::handlers::{run_mqtt, send_message};
 
 
 fn main() -> Result<(), AppErrors> {
@@ -30,8 +34,10 @@ fn main() -> Result<(), AppErrors> {
             let mut websocket = accept(stream.unwrap()).unwrap();
 
             loop {
-                let message = rclone.recv().unwrap();
-                websocket.write_message(Message::from(message)).unwrap();
+                match send_message(rclone.clone(), &mut websocket) {
+                    Ok(_) => (),
+                    Err(err) => eprintln!("{:?}", err)
+                }
             }
         });
     }
