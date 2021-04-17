@@ -1,8 +1,32 @@
 use paho_mqtt as mqtt;
 use std::time::Duration;
+use actix_web_actors::ws;
+use actix::{Actor, StreamHandler};
 use crate::errors::AppErrors;
 use crate::configs::AppConfigs;
 
+
+// Define HTTP actor
+pub struct AerobroWs;
+
+impl Actor for AerobroWs {
+    type Context = ws::WebsocketContext<Self>;
+}
+
+impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AerobroWs {
+    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
+        match msg {
+            Ok(ws::Message::Close(message)) => {
+                ctx.close(message);
+            }
+            _ => ()
+        }
+    }
+
+    fn started(&mut self, ctx: &mut Self::Context) {
+        ctx.text("Websocket connected.")
+    }
+}
 
 #[allow(dead_code)]
 pub fn run_mqtt(configs: AppConfigs) -> Result<(), AppErrors> {
