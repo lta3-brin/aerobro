@@ -5,7 +5,7 @@ mod handlers;
 
 use dotenv::dotenv;
 use actix_web::{App, HttpServer};
-use crate::handlers::index;
+use crate::handlers::{index, aerobrows};
 use crate::errors::AppErrors;
 use crate::configs::get_configs;
 
@@ -18,8 +18,10 @@ async fn main() -> Result<(), AppErrors> {
     let server = HttpServer::new(|| {
         App::new()
             .service(index)
+            .service(aerobrows)
     });
 
+    println!("{}", format!("Menjalankan servis Aerobro di {}", configs.get_app_addr()));
     server.bind(configs.get_app_addr())?
         .run()
         .await?;
