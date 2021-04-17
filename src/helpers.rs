@@ -3,7 +3,7 @@ use std::time::Duration;
 use actix_web_actors::ws;
 use actix::{Actor, StreamHandler};
 use crate::errors::AppErrors;
-use crate::configs::AppConfigs;
+use crate::configs::{AppConfigs, get_configs};
 
 
 // Define HTTP actor
@@ -24,12 +24,23 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AerobroWs {
     }
 
     fn started(&mut self, ctx: &mut Self::Context) {
-        ctx.text("Websocket connected.")
+        match get_configs() {
+            Ok(configs) => {
+                match run_mqtt(configs, ctx) {
+                    Ok(_) => (),
+                    Err(err) => eprintln!("Err: {:?}", err)
+                }
+            }
+            Err(err) => eprintln!("Err: {:?}", err)
+        }
     }
 }
 
-#[allow(dead_code)]
-pub fn run_mqtt(configs: AppConfigs) -> Result<(), AppErrors> {
+
+pub fn run_mqtt(
+    configs: AppConfigs,
+    ctx: &mut ws::WebsocketContext<AerobroWs>
+) -> Result<(), AppErrors> {
     let client_opts = mqtt::CreateOptionsBuilder::new()
         .server_uri(configs.get_addr())
         .client_id("aerobro_mqtt_subscriber")
@@ -58,6 +69,8 @@ pub fn run_mqtt(configs: AppConfigs) -> Result<(), AppErrors> {
         if let Some(msg) = rx {
             let payload = msg.payload();
             let _msg = std::str::from_utf8(payload)?;
+
+            ctx.text("Websocket connected.")
         }
     }
 
