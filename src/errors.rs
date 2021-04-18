@@ -1,5 +1,4 @@
 use std::{env, str, io};
-use crossbeam_channel::SendError;
 
 
 #[derive(Debug)]
@@ -8,24 +7,12 @@ pub enum AppErrors {
     EnvError(env::VarError),
     PahoError(paho_mqtt::Error),
     ParseUtf8Error(str::Utf8Error),
-    ChannelSendError(SendError<String>)
+    ReqwestError(reqwest::Error)
 }
 
-impl From<io::Error> for AppErrors {
-    fn from(err: io::Error) -> Self {
-        Self::IoError(err)
-    }
-}
-
-impl From<env::VarError> for AppErrors {
-    fn from(err: env::VarError) -> Self {
-        Self::EnvError(err)
-    }
-}
-
-impl From<paho_mqtt::Error> for AppErrors {
-    fn from(err: paho_mqtt::Error) -> Self {
-        Self::PahoError(err)
+impl From<reqwest::Error> for AppErrors {
+    fn from(err: reqwest::Error) -> Self {
+        Self::ReqwestError(err)
     }
 }
 
@@ -35,8 +22,20 @@ impl From<str::Utf8Error> for AppErrors {
     }
 }
 
-impl From<SendError<String>> for AppErrors {
-    fn from(err: SendError<String>) -> Self {
-        Self::ChannelSendError(err)
+impl From<paho_mqtt::Error> for AppErrors {
+    fn from(err: paho_mqtt::Error) -> Self {
+        Self::PahoError(err)
+    }
+}
+
+impl From<env::VarError> for AppErrors {
+    fn from(err: env::VarError) -> Self {
+        Self::EnvError(err)
+    }
+}
+
+impl From<io::Error> for AppErrors {
+    fn from(err: io::Error) -> Self {
+        Self::IoError(err)
     }
 }

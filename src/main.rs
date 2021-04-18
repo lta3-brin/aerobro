@@ -1,40 +1,39 @@
 mod configs;
 mod errors;
+mod helpers;
 mod handlers;
+mod models;
 
 use dotenv::dotenv;
-use std::thread::spawn;
-use std::net::TcpListener;
-use crossbeam_channel::unbounded;
-use tungstenite::{accept, Message};
+use actix_cors::Cors;
+use actix_web::{App, HttpServer};
+use crate::handlers::{index, bh77, bh77_broadcast};
 use crate::errors::AppErrors;
 use crate::configs::get_configs;
-use crate::handlers::run_mqtt;
+use crate::models::Broadcasters;
 
 
-fn main() -> Result<(), AppErrors> {
+#[actix_web::main]
+async fn main() -> Result<(), AppErrors> {
     dotenv().ok();
 
-    let (s, r) = unbounded::<String>();
     let configs = get_configs()?;
-    let server = TcpListener::bind(configs.get_websocket_addr())?;
+    let data = Broadcasters::create();
+    let server = HttpServer::new(move || {
+        let cors = Cors::default().allow_any_origin().allow_any_header();
 
-    spawn(move || {
-        run_mqtt(configs, s)
+        App::new()
+            .wrap(cors)
+            .app_data(data.clone())
+            .service(index)
+            .service(bh77)
+            .service(bh77_broadcast)
     });
 
-    for stream in server.incoming() {
-        let rclone = r.clone();
-
-        spawn(move || {
-            let mut websocket = accept(stream.unwrap()).unwrap();
-
-            loop {
-                let message = rclone.recv().unwrap();
-                websocket.write_message(Message::from(message)).unwrap();
-            }
-        });
-    }
+    println!("{}", format!("Menjalankan servis Aerobro di 0.0.0.0:{}", configs.get_app_port()));
+    server.bind(format!("0.0.0.0:{}", configs.get_app_port()))?
+        .run()
+        .await?;
 
     Ok(())
 }

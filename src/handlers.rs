@@ -1,47 +1,43 @@
-use paho_mqtt as mqtt;
-use std::time::Duration;
-use crossbeam_channel::Sender;
-use crate::errors::AppErrors;
-use crate::configs::AppConfigs;
+use std::sync::Mutex;
+use actix_web::web::Data;
+use actix_web::{get, post, Responder, HttpResponse, web};
+use crate::models::{Broadcasters, Sensor};
 
 
-pub fn run_mqtt(
-    configs: AppConfigs,
-    s: Sender<String>
-) -> Result<(), AppErrors> {
-    let client_opts = mqtt::CreateOptionsBuilder::new()
-        .server_uri(configs.get_addr())
-        .client_id("aerobro_mqtt_subscriber")
-        .finalize();
+#[get("/")]
+pub async fn index() -> impl Responder {
+    format!("Halaman ini dikosongkan.")
+}
 
-    let mut client = mqtt::Client::new(client_opts)?;
-    let rx = client.start_consuming();
-
-    let lwt = mqtt::MessageBuilder::new()
-        .topic("aerobro_topic")
-        .payload("Consumer lost connection")
-        .finalize();
-
-    let conn_opts = mqtt::ConnectOptionsBuilder::new()
-        .keep_alive_interval(Duration::from_secs(20))
-        .clean_session(false)
-        .will_message(lwt)
-        .user_name(configs.get_user())
-        .password(configs.get_password())
-        .finalize();
-
-    client.connect(conn_opts)?;
-    client.subscribe(configs.get_topic().as_str(), 1)?;
-
-    println!("Menjalankan socket.");
-    for rx in rx.iter() {
-        if let Some(msg) = rx {
-            let payload = msg.payload();
-            let msg = std::str::from_utf8(payload)?;
-
-            s.send(msg.to_string())?;
+#[get("/bh77")]
+pub async fn bh77(data: Data<Mutex<Broadcasters>>) -> impl Responder {
+    match data.lock() {
+        Ok(mut r) => {
+            HttpResponse::Ok()
+                .header("content-type", "text/event-stream")
+                .streaming(r.new_client())
+        }
+        Err(err) => {
+            HttpResponse::BadRequest().body(err.to_string())
         }
     }
+}
 
-    Ok(())
+#[post("/bh77")]
+pub async fn bh77_broadcast(
+    msg: web::Json<Sensor>,
+    data: Data<Mutex<Broadcasters>>,
+) -> impl Responder {
+    match data.lock() {
+        Ok(dt) => {
+            dt.send_sensor(msg.0.value.as_str());
+
+            HttpResponse::Ok().body("Data sensor dikirimkan")
+        }
+        Err(e) => {
+            HttpResponse::BadGateway().body(
+                format!("{}", e)
+            )
+        }
+    }
 }
