@@ -24,30 +24,10 @@ export default {
       openURL(url, null, { noopener: true, noreferrer: true })
     },
     onListenSocket () {
-      const addr = process.env.WS_ADDRESS
-
-      this.connection = new WebSocket(addr)
-      this.connection.onopen = async () => {
-        const pesan = 'Mencoba terhubung dengan socket Aerobro...'
-
-        console.log(pesan)
-      }
+      this.connection = new EventSource(`http://${process.env.STREAM_ADDRESS}/bh77`)
 
       this.connection.onmessage = (event) => {
-        const data = event.data
-        const payload = data.split(',')
-
-        this.$store.commit('jembatan/sensorMutation', {
-          acc: parseFloat(payload[0]),
-          strain1: parseFloat(payload[1]),
-          strain2: parseFloat(payload[2])
-        })
-      }
-
-      this.connection.onclose = () => {
-        const pesan = 'Koneksi tidak terhubung dengan socket Aerobro...'
-
-        console.log(pesan)
+        console.log(event.data)
       }
     }
   },
