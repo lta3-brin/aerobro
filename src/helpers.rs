@@ -1,46 +1,11 @@
 use paho_mqtt as mqtt;
 use std::time::Duration;
-use actix_web_actors::ws;
-use actix::{Actor, StreamHandler};
+use std::collections::HashMap;
 use crate::errors::AppErrors;
-use crate::configs::{AppConfigs, get_configs};
+use crate::configs::AppConfigs;
 
 
-// Define HTTP actor
-pub struct AerobroWs;
-
-impl Actor for AerobroWs {
-    type Context = ws::WebsocketContext<Self>;
-}
-
-impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AerobroWs {
-    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
-        match msg {
-            Ok(ws::Message::Close(message)) => {
-                ctx.close(message);
-            }
-            _ => ()
-        }
-    }
-
-    fn started(&mut self, ctx: &mut Self::Context) {
-        match get_configs() {
-            Ok(configs) => {
-                match run_mqtt(configs, ctx) {
-                    Ok(_) => (),
-                    Err(err) => eprintln!("Err: {:?}", err)
-                }
-            }
-            Err(err) => eprintln!("Err: {:?}", err)
-        }
-    }
-}
-
-
-pub fn run_mqtt(
-    configs: AppConfigs,
-    ctx: &mut ws::WebsocketContext<AerobroWs>
-) -> Result<(), AppErrors> {
+pub fn run_mqtt(configs: AppConfigs, bridge_code: &str) -> Result<(), AppErrors> {
     let client_opts = mqtt::CreateOptionsBuilder::new()
         .server_uri(configs.get_addr())
         .client_id("aerobro_mqtt_subscriber")
@@ -68,9 +33,16 @@ pub fn run_mqtt(
     for rx in rx.iter() {
         if let Some(msg) = rx {
             let payload = msg.payload();
-            let _msg = std::str::from_utf8(payload)?;
+            let msg = std::str::from_utf8(payload)?;
 
-            ctx.text("Websocket connected.")
+            let url = format!("http://localhost:{}/{}", configs.get_app_port(), bridge_code);
+            let mut map = HashMap::new();
+            map.insert("value", msg);
+
+            let client = reqwest::blocking::Client::new();
+            client.post(url)
+                .json(&map)
+                .send()?;
         }
     }
 
