@@ -7,17 +7,18 @@ pub enum AppErrors {
     EnvError(env::VarError),
     PahoError(paho_mqtt::Error),
     ParseUtf8Error(str::Utf8Error),
+    ReqwestError(reqwest::Error)
 }
 
-impl From<io::Error> for AppErrors {
-    fn from(err: io::Error) -> Self {
-        Self::IoError(err)
+impl From<reqwest::Error> for AppErrors {
+    fn from(err: reqwest::Error) -> Self {
+        Self::ReqwestError(err)
     }
 }
 
-impl From<env::VarError> for AppErrors {
-    fn from(err: env::VarError) -> Self {
-        Self::EnvError(err)
+impl From<str::Utf8Error> for AppErrors {
+    fn from(err: str::Utf8Error) -> Self {
+        Self::ParseUtf8Error(err)
     }
 }
 
@@ -27,8 +28,14 @@ impl From<paho_mqtt::Error> for AppErrors {
     }
 }
 
-impl From<str::Utf8Error> for AppErrors {
-    fn from(err: str::Utf8Error) -> Self {
-        Self::ParseUtf8Error(err)
+impl From<env::VarError> for AppErrors {
+    fn from(err: env::VarError) -> Self {
+        Self::EnvError(err)
+    }
+}
+
+impl From<io::Error> for AppErrors {
+    fn from(err: io::Error) -> Self {
+        Self::IoError(err)
     }
 }
