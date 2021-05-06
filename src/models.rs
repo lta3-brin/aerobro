@@ -48,12 +48,12 @@ impl Broadcasters {
         ));
 
         Broadcasters::spawn_ping(data.clone());
-        Broadcasters::spawn_mqtt();
+        Broadcasters::spawn_mqtt(data.clone());
 
         data
     }
 
-    fn spawn_ping(data: Data<Mutex<Broadcasters>>) {
+    fn spawn_ping(data: Data<Mutex<Self>>) {
         spawn(async move {
             let mut task = interval_at(
                 Instant::now(),
@@ -85,11 +85,11 @@ impl Broadcasters {
         self.producers = new_producers;
     }
 
-    fn spawn_mqtt() {
+    fn spawn_mqtt(data: Data<Mutex<Self>>) {
         spawn(async move {
             match get_configs() {
                 Ok(conf) => {
-                    match run_mqtt(conf, "bh77") {
+                    match run_mqtt(data, conf) {
                         Ok(_) => (),
                         Err(e) => eprintln!("{:?}", e)
                     }
