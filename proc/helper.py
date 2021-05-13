@@ -1,31 +1,43 @@
+from os import getenv
+
+
 def acc_status(a_):
-    if a_ <= 0.4:
+    acc_min = getenv("ACC_THRESHOLD_MIN")
+    acc_max = getenv("ACC_THRESHOLD_MAX")
+
+    if a_ <= float(acc_min):
         return 0
-    elif 0.4 < a_ <= 0.7:
+    elif float(acc_min) < a_ <= float(acc_max):
         return 1
-    elif a_ > 0.7:
+    elif a_ > float(acc_max):
         return 2
     else:
         return -1
 
 
 def displ_status(a_):
-    if a_ <= 3:
+    displ_min = getenv("DISPL_THRESHOLD_MIN")
+    displ_max = getenv("DISPL_THRESHOLD_MAX")
+
+    if a_ <= float(displ_min):
         return 0
-    elif 3 < a_ <= 3.5:
+    elif float(displ_min) < a_ <= float(displ_max):
         return 1
-    elif a_ > 3.5:
+    elif a_ > float(displ_max):
         return 2
     else:
         return -1
 
 
 def strn_status(a_):
-    if a_ <= 0.05:
+    strain_min = getenv("STRAIN_THRESHOLD_MIN")
+    strain_max = getenv("STRAIN_THRESHOLD_MAX")
+
+    if a_ <= float(strain_min):
         return 0
-    elif 0.05 < a_ <= 0.07:
+    elif float(strain_min) < a_ <= float(strain_max):
         return 1
-    elif a_ > 0.07:
+    elif a_ > float(strain_max):
         return 2
     else:
         return -1
