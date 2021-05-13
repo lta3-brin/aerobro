@@ -1,9 +1,11 @@
 import sys
+from dotenv import load_dotenv
 from proc.handler import calc_data
 
 if __name__ == "__main__":
-    args = sys.argv
+    load_dotenv()
 
+    args = sys.argv
     if "daily" in args:
         calc_data("daily")
     elif "weekly" in args:
