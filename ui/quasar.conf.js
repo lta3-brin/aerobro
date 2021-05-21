@@ -73,16 +73,7 @@ module.exports = function (/* ctx */) {
 
       // Environment variable
       // https://quasar.dev/quasar-cli/handling-process-env#Import-based-on-process.env
-      env: {
-        STREAM_ADDRESS: process.env.STREAM_ADDRESS,
-        ACC_THRESHOLD_MIN: process.env.ACC_THRESHOLD_MIN,
-        ACC_THRESHOLD_MAX: process.env.ACC_THRESHOLD_MAX,
-        STRAIN_THRESHOLD_MIN: process.env.STRAIN_THRESHOLD_MIN,
-        STRAIN_THRESHOLD_MAX: process.env.STRAIN_THRESHOLD_MAX,
-        DISP_THRESHOLD_MIN: process.env.DISP_THRESHOLD_MIN,
-        DISP_THRESHOLD_MAX: process.env.DISP_THRESHOLD_MAX,
-        REPO_NAME: process.env.REPO_NAME
-      }
+      env: require('dotenv').config().parsed
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
