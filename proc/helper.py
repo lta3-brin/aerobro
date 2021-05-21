@@ -3,6 +3,7 @@ import psycopg2
 import pandas as pd
 from os import getenv
 from io import StringIO
+from psycopg2 import sql
 
 
 def acc_status(a_):
@@ -74,6 +75,9 @@ def df_to_pg(conn, df, table):
     cursor = conn.cursor()
 
     try:
+        cursor.execute(
+            sql.SQL("truncate table {}").format(sql.Identifier(table))
+        )
         cursor.copy_from(buffer, table, sep=",")
         conn.commit()
         cursor.close()
