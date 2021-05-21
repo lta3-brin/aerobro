@@ -52,13 +52,14 @@ def connect_pg():
         print('Mencoba terhubung dengan database PostgreSQL...')
 
         conn = psycopg2.connect(
-            host="localhost",
-            database="aerobro",
-            user="aerobro",
-            password="aerobro.pwd"
+            host=getenv("DB_HOST"),
+            port=getenv("DB_PORT"),
+            database=getenv("DB_NAME"),
+            user=getenv("DB_USER"),
+            password=getenv("DB_PASSWORD")
         )
 
-        print("Connection successful")
+        print("Koneksi berhasil...")
 
         return conn
     except (Exception, psycopg2.DatabaseError) as error:
@@ -77,7 +78,7 @@ def df_to_pg(conn, df, table):
         conn.commit()
         cursor.close()
 
-        print("copy_from_stringio() berhasil dilakukan.")
+        print("Konversi berhasil dilakukan.")
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error: %s" % error)
         conn.rollback()
