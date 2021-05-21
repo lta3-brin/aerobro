@@ -16,4 +16,9 @@ STRAIN_THRESHOLD_MAX=0.07            #ui,proc
 DISPL_THRESHOLD_MIN=3.0              #ui,proc
 DISPL_THRESHOLD_MAX=3.5              #ui,proc
 REPO_NAME=aerobro                    #ui,proc
+DB_HOST=localhost                    #proc
+DB_PORT=5432                         #proc
+DB_NAME=dbname                       #proc
+DB_USER=dbuser                       #proc
+DB_PASSWORD=dbpassword               #proc
 ```
