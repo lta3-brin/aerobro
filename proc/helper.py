@@ -1,4 +1,8 @@
+import sys
+import psycopg2
+import pandas as pd
 from os import getenv
+from io import StringIO
 
 
 def acc_status(a_):
@@ -41,3 +45,58 @@ def strn_status(a_):
         return 2
     else:
         return -1
+
+
+def connect_pg():
+    try:
+        print('Mencoba terhubung dengan database PostgreSQL...')
+
+        conn = psycopg2.connect(
+            host="localhost",
+            database="aerobro",
+            user="aerobro",
+            password="aerobro.pwd"
+        )
+
+        print("Connection successful")
+
+        return conn
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        sys.exit(1)
+
+
+def df_to_pg(conn, df, table):
+    buffer = StringIO()
+    df.to_csv(buffer, index_label='id', header=False)
+    buffer.seek(0)
+    cursor = conn.cursor()
+
+    try:
+        cursor.copy_from(buffer, table, sep=",")
+        conn.commit()
+        cursor.close()
+
+        print("copy_from_stringio() berhasil dilakukan.")
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error: %s" % error)
+        conn.rollback()
+        cursor.close()
+
+        return 1
+
+
+def pg_to_df(conn, select_query, column_names):
+    cursor = conn.cursor()
+    try:
+        cursor.execute(select_query)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error: %s" % error)
+        cursor.close()
+        return 1
+
+    tupples = cursor.fetchall()
+    cursor.close()
+
+    df = pd.DataFrame(tupples, columns=column_names)
+    return df
