@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def calc_data(when):
     from proc.helper import (
         acc_status,
@@ -9,7 +6,6 @@ def calc_data(when):
         connect_pg,
         pg_to_df
     )
-    np.random.seed(101)
 
     conn = connect_pg()
     df = pg_to_df(conn, "SELECT * FROM sensor", ["id", "date", "acceleration", "displacement", "strain"])
