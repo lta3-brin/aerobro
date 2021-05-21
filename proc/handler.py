@@ -4,7 +4,8 @@ def calc_data(when):
         displ_status,
         strn_status,
         connect_pg,
-        pg_to_df
+        pg_to_df,
+        df_to_pg
     )
 
     conn = connect_pg()
@@ -20,76 +21,76 @@ def calc_data(when):
             df["date"].dt.to_period("D"),
             df["acc_status"]
         ]).size().reset_index(name="count")
-        print(df_acc)
+        df_to_pg(conn, df_acc, "acc_daily")
 
         df_displ = df.groupby([
             df["date"].dt.to_period("D"),
             df["displ_status"]
         ]).size().reset_index(name="count")
-        print(df_displ)
+        df_to_pg(conn, df_displ, "displ_daily")
 
         df_strn = df.groupby([
             df["date"].dt.to_period("D"),
             df["strn_status"]
         ]).size().reset_index(name="count")
-        print(df_strn)
+        df_to_pg(conn, df_strn, "strn_daily")
 
     elif when == "weekly":
         df_acc = df.groupby([
             df["date"].dt.to_period("W"),
             df["acc_status"]
         ]).size().reset_index(name="count")
-        print(df_acc)
+        df_to_pg(conn, df_acc, "acc_weekly")
 
         df_displ = df.groupby([
             df["date"].dt.to_period("W"),
             df["displ_status"]
         ]).size().reset_index(name="count")
-        print(df_displ)
+        df_to_pg(conn, df_displ, "displ_weekly")
 
         df_strn = df.groupby([
             df["date"].dt.to_period("W"),
             df["strn_status"]
         ]).size().reset_index(name="count")
-        print(df_strn)
+        df_to_pg(conn, df_strn, "strn_weekly")
 
     elif when == "monthly":
         df_acc = df.groupby([
             df["date"].dt.to_period("M"),
             df["acc_status"]
         ]).size().reset_index(name="count")
-        print(df_acc)
+        df_to_pg(conn, df_acc, "acc_monthly")
 
         df_displ = df.groupby([
             df["date"].dt.to_period("M"),
             df["displ_status"]
         ]).size().reset_index(name="count")
-        print(df_displ)
+        df_to_pg(conn, df_displ, "displ_monthly")
 
         df_strn = df.groupby([
             df["date"].dt.to_period("M"),
             df["strn_status"]
         ]).size().reset_index(name="count")
-        print(df_strn)
+        df_to_pg(conn, df_strn, "strn_monthly")
 
     elif when == "yearly":
         df_acc = df.groupby([
             df["date"].dt.to_period("Y"),
             df["acc_status"]
         ]).size().reset_index(name="count")
-        print(df_acc)
+        df_to_pg(conn, df_acc, "acc_yearly")
 
         df_displ = df.groupby([
             df["date"].dt.to_period("Y"),
             df["displ_status"]
         ]).size().reset_index(name="count")
-        print(df_displ)
+        df_to_pg(conn, df_displ, "displ_yearly")
 
         df_strn = df.groupby([
             df["date"].dt.to_period("Y"),
             df["strn_status"]
         ]).size().reset_index(name="count")
-        print(df_strn)
+        df_to_pg(conn, df_strn, "strn_yearly")
 
     else:
         print("Proses data dilakukan diluar waktu yang diperlukan.")
