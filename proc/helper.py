@@ -1,4 +1,9 @@
+import sys
+import psycopg2
+import pandas as pd
 from os import getenv
+from io import StringIO
+from psycopg2 import sql
 
 
 def acc_status(a_):
@@ -41,3 +46,62 @@ def strn_status(a_):
         return 2
     else:
         return -1
+
+
+def connect_pg():
+    try:
+        print('Mencoba terhubung dengan database PostgreSQL...')
+
+        conn = psycopg2.connect(
+            host=getenv("DB_HOST"),
+            port=getenv("DB_PORT"),
+            database=getenv("DB_NAME"),
+            user=getenv("DB_USER"),
+            password=getenv("DB_PASSWORD")
+        )
+
+        print("Koneksi berhasil...")
+
+        return conn
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        sys.exit(1)
+
+
+def df_to_pg(conn, df, table):
+    buffer = StringIO()
+    df.to_csv(buffer, index_label='id', header=False)
+    buffer.seek(0)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            sql.SQL("truncate table {}").format(sql.Identifier(table))
+        )
+        cursor.copy_from(buffer, table, sep=",")
+        conn.commit()
+        cursor.close()
+
+        print("Konversi berhasil dilakukan.")
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error: %s" % error)
+        conn.rollback()
+        cursor.close()
+
+        return 1
+
+
+def pg_to_df(conn, select_query, column_names):
+    cursor = conn.cursor()
+    try:
+        cursor.execute(select_query)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error: %s" % error)
+        cursor.close()
+        return 1
+
+    tupples = cursor.fetchall()
+    cursor.close()
+
+    df = pd.DataFrame(tupples, columns=column_names)
+    return df
