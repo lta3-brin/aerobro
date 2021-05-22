@@ -13,16 +13,9 @@ jobs:
       - name: Checkout Latest Version
         uses: actions/checkout@v2
 
-      - name: Init Directory & envfile
+      - name: Init Directory
         run: |
           mkdir aerobro
-          cat > ./aerobro/.env << ENDOFFILE
-          MQTT_ADDR=${{ secrets.MQTT_ADDR }}
-          MQTT_USER=${{ secrets.MQTT_USER }}
-          MQTT_PWD=${{ secrets.MQTT_PWD }}
-          MSG_TOPIC=${{ secrets.MSG_TOPIC }}
-          SOCKET_ADDRESS=0.0.0.0:3000
-          ENDOFFILE
 
       - name: Install NodeJS
         uses: actions/setup-node@v2
@@ -39,13 +32,13 @@ jobs:
 
       - name: Build UI
         env:
-          WS_ADDRESS: ${{ secrets.WS_ADDRESS }}
-          ACC_THRESHOLD_MIN: 0.3
+          STREAM_ADDRESS: ${{ secrets.WS_ADDRESS }}
+          ACC_THRESHOLD_MIN: 0.4
           ACC_THRESHOLD_MAX: 0.7
           STRAIN_THRESHOLD_MIN: 0.4
-          STRAIN_THRESHOLD_MAX: 0.6
-          DISP_THRESHOLD_MIN: 0.4
-          DISP_THRESHOLD_MAX: 0.6
+          STRAIN_THRESHOLD_MAX: 0.7
+          DISP_THRESHOLD_MIN: 3.0
+          DISP_THRESHOLD_MAX: 3.5
           REPO_NAME: aerobro
         run: |
           mkdir aerobro/spa
@@ -67,6 +60,7 @@ jobs:
       - name: Move to Aerobro Directory
         run: |
           mv target/release/aerobro aerobro/
+          mv proc/ aerobro/
           ls aerobro/
 
       - name: Upload UI to Release
@@ -90,3 +84,30 @@ jobs:
           mv aerobros/* .
           rm -r aerobros/
           rm aerobro.tgz
+
+      - name: Make Main Env.
+        run: |
+          cat > .env << ENDOFFILE
+          MQTT_ADDR=${{ secrets.MQTT_ADDR }}
+          MQTT_USER=${{ secrets.MQTT_USER }}
+          MQTT_PWD=${{ secrets.MQTT_PWD }}
+          MSG_TOPIC=${{ secrets.MSG_TOPIC }}
+          APP_PORT=3000
+          ENDOFFILE
+
+      - name: Make Proc. Env.
+        run: |
+          cat > proc/.env << ENDOFFILE
+          STREAM_ADDRESS=${{ secrets.WS_ADDRESS }}
+          ACC_THRESHOLD_MIN=0.4
+          ACC_THRESHOLD_MAX=0.7
+          STRAIN_THRESHOLD_MIN=0.4
+          STRAIN_THRESHOLD_MAX=0.7
+          DISP_THRESHOLD_MIN=3.0
+          DISP_THRESHOLD_MAX=3.5
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          ENDOFFILE
