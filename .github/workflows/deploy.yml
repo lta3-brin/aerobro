@@ -31,18 +31,19 @@ jobs:
           npm install -g @quasar/cli
 
       - name: Build UI
-        env:
-          STREAM_ADDRESS: ${{ secrets.WS_ADDRESS }}
-          ACC_THRESHOLD_MIN: 0.4
-          ACC_THRESHOLD_MAX: 0.7
-          STRAIN_THRESHOLD_MIN: 0.4
-          STRAIN_THRESHOLD_MAX: 0.7
-          DISP_THRESHOLD_MIN: 3.0
-          DISP_THRESHOLD_MAX: 3.5
-          REPO_NAME: aerobro
         run: |
           mkdir aerobro/spa
           cd ui
+          cat > .env << ENDOFFILE
+          STREAM_ADDRESS=${{ secrets.STREAM_ADDRESS }}
+          ACC_THRESHOLD_MIN=0.3
+          ACC_THRESHOLD_MAX=0.7
+          STRAIN_THRESHOLD_MIN=0.4
+          STRAIN_THRESHOLD_MAX=0.6
+          DISP_THRESHOLD_MIN=0.4
+          DISP_THRESHOLD_MAX=0.6
+          REPO_NAME=aerobro
+          ENDOFFILE
           quasar build
           cp -r dist/spa/* ../aerobro
 
