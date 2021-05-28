@@ -1,14 +1,12 @@
-use std::sync::Mutex;
 use paho_mqtt as mqtt;
 use std::time::Duration;
-use actix_web::web::Data;
+use std::collections::HashMap;
 use crate::errors::AppErrors;
 use crate::configs::AppConfigs;
-use crate::models::Broadcasters;
 
 
 pub fn run_mqtt(
-    data: Data<Mutex<Broadcasters>>,
+    bridge_code: &str,
     configs: AppConfigs
 ) -> Result<(), AppErrors> {
     let client_opts = mqtt::CreateOptionsBuilder::new()
@@ -35,19 +33,19 @@ pub fn run_mqtt(
     client.connect(conn_opts)?;
     client.subscribe(configs.get_topic().as_str(), 1)?;
 
-    match data.lock() {
-        Ok(brdcst) => {
-            for rx in rx.iter() {
-                if let Some(msg) = rx {
-                    let payload = msg.payload();
-                    let msg = std::str::from_utf8(payload)?;
+    for rx in rx.iter() {
+        if let Some(msg) = rx {
+            let payload = msg.payload();
+            let msg = std::str::from_utf8(payload)?;
 
-                    brdcst.send_sensor(msg);
-                }
-            }
-        },
-        Err(e) => {
-            eprintln!("{}", e.to_string());
+            let url = format!("http://localhost:{}/{}", configs.get_app_port(), bridge_code);
+            let mut map = HashMap::new();
+            map.insert("value", msg);
+
+            let client = reqwest::blocking::Client::new();
+            client.post(url)
+                .json(&map)
+                .send()?;
         }
     }
 
