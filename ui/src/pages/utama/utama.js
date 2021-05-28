@@ -24,10 +24,19 @@ export default {
       openURL(url, null, { noopener: true, noreferrer: true })
     },
     onListenSocket () {
-      this.connection = new EventSource(`http://${process.env.STREAM_ADDRESS}/bh77`)
+      const protokol = window.location.protocol
+
+      this.connection = new EventSource(`${protokol}//${process.env.STREAM_ADDRESS}/bh77`)
 
       this.connection.onmessage = (event) => {
-        console.log(event.data)
+        const data = event.data.split(',')
+        const payload = {
+          acc: data[0],
+          strain1: data[1],
+          strain2: data[2]
+        }
+
+        this.$store.commit('jembatan/sensorMutation', payload)
       }
     }
   },
