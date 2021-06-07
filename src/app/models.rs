@@ -7,8 +7,16 @@ pub struct AppConfigs {
     pub user: String,
     pub password: String,
     pub topic: String,
-    pub appport: String
+    pub appport: String,
+    pub dbhost: String,
+    pub dbport: String,
+    pub dbname: String,
+    pub dbuser: String,
+    pub dbpwd: String
 }
+
+#[derive(Debug)]
+pub struct DbConn;
 
 #[derive(Debug)]
 pub enum AppErrors {
