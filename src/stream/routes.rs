@@ -1,7 +1,7 @@
 use std::sync::Mutex;
 use actix_web::web::Data;
 use actix_web::{get, post, Responder, HttpResponse, web};
-use crate::models::{Broadcasters, Sensor};
+use crate::stream::models::{Broadcasters, Sensor};
 
 
 #[get("/")]

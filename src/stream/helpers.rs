@@ -1,8 +1,7 @@
 use paho_mqtt as mqtt;
 use std::time::Duration;
 use std::collections::HashMap;
-use crate::errors::AppErrors;
-use crate::configs::AppConfigs;
+use crate::app::models::{AppConfigs, AppErrors};
 
 
 pub fn run_mqtt(

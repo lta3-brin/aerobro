@@ -1,22 +1,18 @@
 use std::pin::Pin;
-use actix_web::Error;
 use std::sync::Mutex;
-use serde::Deserialize;
+use actix_web::Error;
 use std::time::Duration;
-use actix_web::rt::spawn;
+use tokio::sync::mpsc::channel;
 use std::task::{Context, Poll};
 use futures::{Stream, StreamExt};
 use actix_web::web::{Bytes, Data};
-use actix_web::rt::time::{interval_at, Instant};
-use tokio::sync::mpsc::{Receiver, Sender, channel};
-use crate::helpers::run_mqtt;
-use crate::configs::get_configs;
+use actix_web::rt::{spawn, time::{interval_at, Instant}};
+use crate::app::helpers::get_configs;
+use crate::stream::{
+    helpers::run_mqtt,
+    models::{Client, Broadcasters}
+};
 
-
-#[derive(Debug, Deserialize)]
-pub struct Sensor { pub value: String }
-
-pub struct Client(Receiver<Bytes>);
 
 impl Stream for Client {
     type Item = Result<Bytes, Error>;
@@ -31,10 +27,6 @@ impl Stream for Client {
             Poll::Pending => Poll::Pending,
         }
     }
-}
-
-pub struct Broadcasters {
-    producers: Vec<Sender<Bytes>>
 }
 
 impl Broadcasters {
