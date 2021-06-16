@@ -1,7 +1,11 @@
 use sqlx::PgPool;
 use std::{env, str, io};
-use crate::app::models::{AppErrors, AppConfigs, DbConn};
+use actix_web::{ResponseError, HttpResponse};
+use actix_web::http::{StatusCode, header};
+use actix_web::dev::HttpResponseBuilder;
+use crate::app::dto::UmpanBalik;
 use crate::app::helpers::get_configs;
+use crate::app::models::{AppErrors, AppConfigs, DbConn};
 
 impl From<sqlx::Error> for AppErrors {
     fn from(err: sqlx::Error) -> Self {
@@ -42,13 +46,9 @@ impl From<io::Error> for AppErrors {
 impl AppConfigs {
     pub fn new(addr: String, user: String,
            password: String, topic: String,
-           appport: String, dbhost: String,
-           dbport: String, dbname: String,
-           dbuser: String, dbpwd: String
+           appport: String, dburl: String
     ) -> Self {
-        Self { addr, user, password, topic, appport,
-            dbhost, dbport, dbname, dbuser, dbpwd
-        }
+        Self { addr, user, password, topic, appport, dburl }
     }
 
     pub fn get_addr(&self) -> String {
@@ -71,40 +71,37 @@ impl AppConfigs {
         self.appport.clone()
     }
 
-    pub fn get_dbhost(&self) -> String {
-        self.dbhost.clone()
-    }
-
-    pub fn get_dbport(&self) -> String {
-        self.dbport.clone()
-    }
-
-    pub fn get_dbname(&self) -> String {
-        self.dbname.clone()
-    }
-
-    pub fn get_dbuser(&self) -> String {
-        self.dbuser.clone()
-    }
-
-    pub fn get_dbpwd(&self) -> String {
-        self.dbpwd.clone()
+    pub fn get_dburl(&self) -> String {
+        self.dburl.clone()
     }
 }
 
 impl DbConn {
     pub async fn create() -> Result<PgPool, AppErrors> {
         let config = get_configs()?;
-        let addr = format!(
-            "postgres://{}:{}@{}:{}/{}",
-            config.get_dbuser(),
-            config.get_dbpwd(),
-            config.get_dbhost(),
-            config.get_dbport(),
-            config.get_dbname()
-        );
+        let addr = config.get_dburl();
         let pool = PgPool::new(addr.as_str()).await?;
 
         Ok(pool)
+    }
+}
+
+impl ResponseError for AppErrors {
+    fn status_code(&self) -> StatusCode {
+        match *self {
+            _ => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+
+    fn error_response(&self) -> HttpResponse {
+        let res = UmpanBalik::new(
+            false,
+            "Terjadi kesalahan yang perlu diperhatikan",
+            self.to_string()
+        );
+
+        HttpResponseBuilder::new(self.status_code())
+            .set_header(header::CONTENT_TYPE, "application/json")
+            .json(res)
     }
 }
