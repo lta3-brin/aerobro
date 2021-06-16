@@ -26,7 +26,7 @@ export default {
     onListenSocket () {
       const protokol = window.location.protocol
 
-      this.connection = new EventSource(`${protokol}//${process.env.STREAM_ADDRESS}/bh77`)
+      this.connection = new EventSource(`${protokol}//${process.env.STREAM_ADDRESS}/stream`)
 
       this.connection.onmessage = (event) => {
         const data = event.data.split(',')

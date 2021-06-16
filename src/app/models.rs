@@ -1,4 +1,5 @@
 use std::{env, str, io};
+use derive_more::{Display, Error};
 
 
 #[derive(Debug, Clone)]
@@ -8,17 +9,13 @@ pub struct AppConfigs {
     pub password: String,
     pub topic: String,
     pub appport: String,
-    pub dbhost: String,
-    pub dbport: String,
-    pub dbname: String,
-    pub dbuser: String,
-    pub dbpwd: String
+    pub dburl: String
 }
 
 #[derive(Debug)]
 pub struct DbConn;
 
-#[derive(Debug)]
+#[derive(Debug, Display, Error)]
 pub enum AppErrors {
     IoError(io::Error),
     EnvError(env::VarError),

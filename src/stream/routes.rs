@@ -4,13 +4,19 @@ use actix_web::{get, post, Responder, HttpResponse, web};
 use crate::stream::models::{Broadcasters, Sensor};
 
 
+pub fn stream_routes(cfg: &mut web::ServiceConfig) {
+    cfg.service(index)
+        .service(bh77)
+        .service(bh77_broadcast);
+}
+
 #[get("/")]
-pub async fn index() -> impl Responder {
+async fn index() -> impl Responder {
     format!("Halaman ini dikosongkan.")
 }
 
-#[get("/bh77")]
-pub async fn bh77(data: Data<Mutex<Broadcasters>>) -> impl Responder {
+#[get("/stream")]
+async fn bh77(data: Data<Mutex<Broadcasters>>) -> impl Responder {
     match data.lock() {
         Ok(mut r) => {
             HttpResponse::Ok()
@@ -23,8 +29,8 @@ pub async fn bh77(data: Data<Mutex<Broadcasters>>) -> impl Responder {
     }
 }
 
-#[post("/bh77")]
-pub async fn bh77_broadcast(
+#[post("/stream")]
+async fn bh77_broadcast(
     msg: web::Json<Sensor>,
     data: Data<Mutex<Broadcasters>>,
 ) -> impl Responder {

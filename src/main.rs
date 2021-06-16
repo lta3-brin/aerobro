@@ -1,5 +1,6 @@
 mod app;
 mod stream;
+mod stats;
 
 use dotenv::dotenv;
 use actix_cors::Cors;
@@ -10,8 +11,9 @@ use crate::app::{
 };
 use crate::stream::{
     models::Broadcasters,
-    routes::{bh77, bh77_broadcast, index},
+    routes::stream_routes,
 };
+use crate::stats::routes::stats_routes;
 
 
 #[actix_web::main]
@@ -28,9 +30,8 @@ async fn main() -> Result<(), AppErrors> {
             .wrap(cors)
             .data(db.clone())
             .app_data(data.clone())
-            .service(index)
-            .service(bh77)
-            .service(bh77_broadcast)
+            .configure(stream_routes)
+            .configure(stats_routes)
     });
 
     println!("{}", format!("Menjalankan servis Aerobro di 0.0.0.0:{}", configs.get_app_port()));
