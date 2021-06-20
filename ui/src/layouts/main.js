@@ -1,7 +1,9 @@
 export default {
   name: 'MainLayout',
   data () {
-    return {}
+    return {
+      tab: ''
+    }
   },
   async created () {
     await this.onCreate()
