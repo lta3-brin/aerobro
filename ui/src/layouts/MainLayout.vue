@@ -7,11 +7,9 @@
         </q-toolbar-title>
 
         <div class="q-mr-md">{{ version }}</div>
-
-        <div class="q-gutter-x-sm">
-          <q-btn flat round color="white" icon="home" @click="$router.push({ name: 'utama' })" />
-          <q-btn flat round color="white" icon="receipt" @click="$router.push({ name: 'ringkasan' })" />
-        </div>
+        <q-btn stretch flat label="ACC" color="white" @click="$router.push({ name: 'ringkasanAcc' }, () => {})" />
+        <q-btn stretch flat label="STRAIN" color="white" @click="$router.push({ name: 'ringkasanStrain' }, () => {})" />
+        <q-btn flat round color="white" icon="home" @click="$router.push({ name: 'utama' }, () => {})" />
       </q-toolbar>
     </q-header>
 
