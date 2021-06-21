@@ -6,8 +6,7 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/utama/Index.vue'), name: 'utama' },
       { path: 'ringkasan-acc', component: () => import('pages/ringkasan/Index.vue'), name: 'ringkasanAcc' },
-      { path: 'ringkasan-strain', component: () => import('pages/ringkasan/Index.vue'), name: 'ringkasanStrain' },
-      { path: 'ringkasan-displacement', component: () => import('pages/ringkasan/Index.vue'), name: 'ringkasanDisplacement' }
+      { path: 'ringkasan-strain', component: () => import('pages/ringkasan/Strain.vue'), name: 'ringkasanStrain' }
     ]
   },
 
