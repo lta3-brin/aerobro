@@ -52,6 +52,12 @@ jobs:
         with:
           toolchain: stable
 
+      - name: Make Build Main Env.
+        run: |
+          cat > .env << ENDOFFILE
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          ENDOFFILE
+
       - name: Build Worker Using Cargo
         uses: actions-rs/cargo@v1
         with:
@@ -94,6 +100,7 @@ jobs:
           MQTT_PWD=${{ secrets.MQTT_PWD }}
           MSG_TOPIC=${{ secrets.MSG_TOPIC }}
           APP_PORT=3000
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
           ENDOFFILE
 
       - name: Make Proc. Env.
