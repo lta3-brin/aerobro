@@ -8,7 +8,7 @@ on:
 jobs:
   upload_aerobro:
     name: Upload Aplikasi Aerobro
-    runs-on: ubuntu-20.04
+    runs-on: server15
     steps:
       - name: Checkout Latest Version
         uses: actions/checkout@v2
