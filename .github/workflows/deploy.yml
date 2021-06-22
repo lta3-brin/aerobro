@@ -8,7 +8,7 @@ on:
 jobs:
   upload_aerobro:
     name: Upload Aplikasi Aerobro
-    runs-on: ubuntu-20.04
+    runs-on: server15
     steps:
       - name: Checkout Latest Version
         uses: actions/checkout@v2
@@ -70,31 +70,14 @@ jobs:
           mv proc/ aerobro/
           ls aerobro/
 
-      - name: Upload UI to Release
-        uses: meeDamian/github-release@2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: aerobro/
-          allow_override: true
-
   deploy_aerobro_ui:
     name: Deploy Aerobro UI
     needs: upload_aerobro
     runs-on: server15
     steps:
-      - name: Download Assets
-        run: |
-          rm -rf *
-          wget --no-check-certificate https://github.com/bbta3-bppt/aerobro/releases/latest/download/aerobro.tgz
-          tar -xvf aerobro.tgz
-          mv aerobro/ aerobros/
-          mv aerobros/* .
-          rm -r aerobros/
-          rm aerobro.tgz
-
       - name: Make Main Env.
         run: |
-          cat > .env << ENDOFFILE
+          cat > aerobro/.env << ENDOFFILE
           MQTT_ADDR=${{ secrets.MQTT_ADDR }}
           MQTT_USER=${{ secrets.MQTT_USER }}
           MQTT_PWD=${{ secrets.MQTT_PWD }}
@@ -105,7 +88,7 @@ jobs:
 
       - name: Make Proc. Env.
         run: |
-          cat > proc/.env << ENDOFFILE
+          cat > aerobro/proc/.env << ENDOFFILE
           STREAM_ADDRESS=${{ secrets.WS_ADDRESS }}
           ACC_THRESHOLD_MIN=0.4
           ACC_THRESHOLD_MAX=0.7
