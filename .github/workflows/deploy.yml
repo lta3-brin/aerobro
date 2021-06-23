@@ -102,3 +102,11 @@ jobs:
           DB_USER=${{ secrets.DB_USER }}
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           ENDOFFILE
+
+      - name: Cleaning Up
+        run: |
+          rm Cargo.lock Cargo.toml
+          rm -rf src target ui
+          mv aerobro/ aerobros/
+          mv aerobros/* .
+          rm -rf aerobros/
