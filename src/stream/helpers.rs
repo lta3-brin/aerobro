@@ -5,7 +5,7 @@ use crate::app::models::{AppConfigs, AppErrors};
 
 
 pub fn run_mqtt(
-    bridge_code: &str,
+    param: &str,
     configs: AppConfigs
 ) -> Result<(), AppErrors> {
     let client_opts = mqtt::CreateOptionsBuilder::new()
@@ -37,7 +37,7 @@ pub fn run_mqtt(
             let payload = msg.payload();
             let msg = std::str::from_utf8(payload)?;
 
-            let url = format!("http://localhost:{}/{}", configs.get_app_port(), bridge_code);
+            let url = format!("http://localhost:{}/{}", configs.get_app_port(), param);
             let mut map = HashMap::new();
             map.insert("value", msg);
 
