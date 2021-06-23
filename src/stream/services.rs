@@ -40,7 +40,7 @@ impl Broadcasters {
         ));
 
         Broadcasters::spawn_ping(data.clone());
-        Broadcasters::spawn_mqtt("bh77");
+        Broadcasters::spawn_mqtt("stream");
 
         data
     }
