@@ -24,9 +24,9 @@ export default {
       openURL(url, null, { noopener: true, noreferrer: true })
     },
     onListenSocket () {
-      const protokol = window.location.protocol
+      // const protokol = window.location.protocol
 
-      this.connection = new EventSource(`${protokol}//${process.env.STREAM_ADDRESS}/stream`)
+      this.connection = new EventSource(`http://${process.env.STREAM_ADDRESS}/stream`)
 
       this.connection.onmessage = (event) => {
         const data = event.data.split(',')
