@@ -1,5 +1,7 @@
-from django.urls import path, include
+from django.urls import path
+
+from stats.views.displacement import CalculateDisplacement
 
 urlpatterns = [
-    # path('stats/', include('stats.urls'))
+    path('displacement', CalculateDisplacement.as_view())
 ]
