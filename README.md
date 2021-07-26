@@ -3,13 +3,13 @@ Repositori pengembangan riset aerobro. Selama pengembangan dan produksi aplikasi
 _environment variable_ sebagai berikut:
 
 ```
-MQTT_ADDR=tcp://localhost:1883                          #main
-MQTT_USER=coba                                          #main
-MQTT_PWD=rahasia                                        #main
-MSG_TOPIC=topik                                         #main
-APP_PORT=3000                                           #main
-DATABASE_URL=postgres://user:pwd@localhost:5432/dbname  #main
-STREAM_ADDRESS=localhost:3000                           #ui
+DEBUG=dev                                               #main
+SECRET_KEY=s3cr3t                                       #main
+DB_USERNAME=user                                        #main
+DB_PASSWORD=p4ssword                                    #main
+DB_NAME=dbname                                          #main
+DB_HOST=localhost                                       #main
+DB_PORT=3306                                            #main
 REPO_NAME=aerobro                                       #ui
 ACC_THRESHOLD_MIN=0.4                                   #ui,proc
 ACC_THRESHOLD_MAX=0.7                                   #ui,proc
