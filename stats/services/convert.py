@@ -47,4 +47,4 @@ class ConvertService:
 
         df = df[['logdt', 'displ1', 'displ2']]
 
-        return df.to_json(orient='table')
+        return df.to_json(orient='records', date_format='iso')
