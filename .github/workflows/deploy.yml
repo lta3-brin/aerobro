@@ -9,104 +9,37 @@ jobs:
   upload_aerobro:
     name: Upload Aplikasi Aerobro
     runs-on: server15
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [ 3.7, 3.8, 3.9 ]
+
     steps:
       - name: Checkout Latest Version
         uses: actions/checkout@v2
 
-      - name: Init Directory
-        run: |
-          mkdir aerobro
-
-      - name: Install NodeJS
-        uses: actions/setup-node@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
         with:
-          node-version: '14.x'
+          python-version: ${{ matrix.python-version }}
 
-      - name: Check and Install Dependencies
+      - name: Install Dependencies
         run: |
-          cd ui
-          node -v
-          npm -v
-          npm install
-          npm install -g @quasar/cli
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Build UI
-        run: |
-          mkdir aerobro/spa
-          cd ui
-          cat > .env << ENDOFFILE
-          STREAM_ADDRESS=${{ secrets.STREAM_ADDRESS }}
-          ACC_THRESHOLD_MIN=0.3
-          ACC_THRESHOLD_MAX=0.7
-          STRAIN_THRESHOLD_MIN=0.4
-          STRAIN_THRESHOLD_MAX=0.6
-          DISP_THRESHOLD_MIN=0.4
-          DISP_THRESHOLD_MAX=0.6
-          REPO_NAME=aerobro
-          ENDOFFILE
-          quasar build
-          cp -r dist/spa/* ../aerobro
-
-      - name: Install Rust Toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-
-      - name: Make Build Main Env.
+      - name: Create Env
         run: |
           cat > .env << ENDOFFILE
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          ENDOFFILE
-
-      - name: Build Worker Using Cargo
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release
-
-      - name: Move to Aerobro Directory
-        run: |
-          mv target/release/aerobro aerobro/
-          mv proc/ aerobro/
-          ls aerobro/
-
-  deploy_aerobro_ui:
-    name: Deploy Aerobro UI
-    needs: upload_aerobro
-    runs-on: server15
-    steps:
-      - name: Make Main Env.
-        run: |
-          cat > aerobro/.env << ENDOFFILE
-          MQTT_ADDR=${{ secrets.MQTT_ADDR }}
-          MQTT_USER=${{ secrets.MQTT_USER }}
-          MQTT_PWD=${{ secrets.MQTT_PWD }}
-          MSG_TOPIC=${{ secrets.MSG_TOPIC }}
-          APP_PORT=3000
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          ENDOFFILE
-
-      - name: Make Proc. Env.
-        run: |
-          cat > aerobro/proc/.env << ENDOFFILE
-          STREAM_ADDRESS=${{ secrets.WS_ADDRESS }}
-          ACC_THRESHOLD_MIN=0.4
-          ACC_THRESHOLD_MAX=0.7
-          STRAIN_THRESHOLD_MIN=0.4
-          STRAIN_THRESHOLD_MAX=0.7
-          DISP_THRESHOLD_MIN=3.0
-          DISP_THRESHOLD_MAX=3.5
+          DEBUG=release
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          DB_USERNAME=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_NAME=${{ secrets.DB_NAME }}
           DB_HOST=${{ secrets.DB_HOST }}
           DB_PORT=${{ secrets.DB_PORT }}
-          DB_NAME=${{ secrets.DB_NAME }}
-          DB_USER=${{ secrets.DB_USER }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           ENDOFFILE
 
-      - name: Cleaning Up
+      - name: Run Migration
         run: |
-          rm Cargo.lock Cargo.toml
-          rm -rf src target ui
-          mv aerobro/ aerobros/
-          mv aerobros/* .
-          rm -rf aerobros/
+          python manage.py migrate --fake-initial
