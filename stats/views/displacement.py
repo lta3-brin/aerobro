@@ -20,6 +20,10 @@ class CalculateDisplacement(generics.ListAPIView):
 
     @method_decorator(cache_page(60 * 60 * 2))
     def get(self, *args, **kwargs):
-        disp = ConvertService.get_displacement(self.get_queryset().values_list())
+        freq = self.request.query_params.get('freq', '1h')
+        disp = ConvertService.get_displacement(
+            self.get_queryset().values_list(),
+            freq
+        )
 
         return Response(json.loads(disp))
