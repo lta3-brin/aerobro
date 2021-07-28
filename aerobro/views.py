@@ -3,7 +3,7 @@ from django.views import View
 
 
 class IndexView(View):
-    info = 'Service Aerobro'
+    info = 'Service SHMS'
 
     def get(self, request):
         return HttpResponse(self.info)
