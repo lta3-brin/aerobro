@@ -126,3 +126,6 @@ class Periodicdata2(models.Model):
 
     class Meta:
         db_table = 'periodicdata2'
+        indexes = [
+            models.Index(fields=['station', 'logdt'])
+        ]
